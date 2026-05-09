@@ -16,7 +16,8 @@ import {
   UserRound,
 } from "lucide-react";
 
-import { SiGithub, SiLinkedin, SiX } from "react-icons/si";
+import { SiGithub, SiX } from "react-icons/si";
+import { FaLinkedinIn } from "react-icons/fa";
 import Magnetic from "@/components/animations/magnetic";
 import LetterCollision from "@/components/animations/letter-collision";
 import WordSlideUp from "@/components/animations/word-slide-up";
@@ -306,7 +307,7 @@ export default function PortfolioExperience() {
           </Magnetic>
           <Magnetic>
             <a className="nav-icon-link" href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
-              <SiLinkedin size={18} />
+              <FaLinkedinIn size={18} />
             </a>
           </Magnetic>
           <Magnetic>
@@ -530,7 +531,7 @@ export default function PortfolioExperience() {
           </Magnetic>
           <Magnetic>
             <a href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer">
-              <SiLinkedin size={18} />
+              <FaLinkedinIn size={18} />
               LinkedIn
             </a>
           </Magnetic>
