@@ -14,14 +14,27 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Muhammad Fathir Yudhistira | Portfolio",
+  metadataBase: new URL("https://fathiryudh.com"),
+  title: "Muhammad Fathir Yudhistira | Software Builder",
   description:
-    "Portfolio for Muhammad Fathir Yudhistira, a software builder focused on practical web apps, Telegram bots, dashboards, and mobile ideas.",
+    "Portfolio of Muhammad Fathir Yudhistira — practical web apps, Telegram bots, dashboards, and mobile ideas. Incoming SIT Software Engineering student based in Singapore.",
+  keywords: ["Muhammad Fathir Yudhistira", "software engineer", "portfolio", "Singapore", "Next.js", "React", "Telegram bots", "web developer"],
+  authors: [{ name: "Muhammad Fathir Yudhistira" }],
   openGraph: {
-    title: "Muhammad Fathir Yudhistira | Portfolio",
+    title: "Muhammad Fathir Yudhistira | Software Builder",
     description:
       "Selected projects, Telegram bots, dashboards, and practical software work by Muhammad Fathir Yudhistira.",
+    url: "https://fathiryudh.com",
+    siteName: "Fathir Yudhistira Portfolio",
+    locale: "en_SG",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@fathiryudh",
+    title: "Muhammad Fathir Yudhistira | Software Builder",
+    description:
+      "Practical web apps, Telegram bots, dashboards, and mobile ideas by Fathir Yudhistira.",
   },
 };
 
