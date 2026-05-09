@@ -16,7 +16,7 @@ import {
   UserRound,
 } from "lucide-react";
 
-import { SiX } from "react-icons/si";
+import { SiGithub, SiLinkedin, SiX } from "react-icons/si";
 import Magnetic from "@/components/animations/magnetic";
 import LetterCollision from "@/components/animations/letter-collision";
 import WordSlideUp from "@/components/animations/word-slide-up";
@@ -301,12 +301,12 @@ export default function PortfolioExperience() {
           <Magnetic><Link href="/contact">Contact</Link></Magnetic>
           <Magnetic>
             <a className="nav-icon-link" href="https://github.com/fathiryudh" target="_blank" rel="noreferrer" aria-label="GitHub profile" title="GitHub">
-              <FileCode size={18} aria-hidden="true" />
+              <SiGithub size={18} />
             </a>
           </Magnetic>
           <Magnetic>
             <a className="nav-icon-link" href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
-              <BriefcaseBusiness size={18} aria-hidden="true" />
+              <SiLinkedin size={18} />
             </a>
           </Magnetic>
           <Magnetic>
@@ -524,13 +524,13 @@ export default function PortfolioExperience() {
           </Magnetic>
           <Magnetic>
             <a href="https://github.com/fathiryudh" target="_blank" rel="noreferrer">
-              <FileCode size={18} aria-hidden="true" />
+              <SiGithub size={18} />
               GitHub
             </a>
           </Magnetic>
           <Magnetic>
             <a href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer">
-              <BriefcaseBusiness size={18} aria-hidden="true" />
+              <SiLinkedin size={18} />
               LinkedIn
             </a>
           </Magnetic>
