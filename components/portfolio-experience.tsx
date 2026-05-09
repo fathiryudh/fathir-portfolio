@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight,
@@ -14,6 +15,12 @@ import {
   Radio,
   UserRound,
 } from "lucide-react";
+
+import Magnetic from "@/components/animations/magnetic";
+import LetterCollision from "@/components/animations/letter-collision";
+import WordSlideUp from "@/components/animations/word-slide-up";
+import SlidingImages from "@/components/animations/sliding-images";
+import OrbitIcons from "@/components/animations/orbit-icons";
 
 type Project = {
   title: string;
@@ -34,7 +41,7 @@ const projects: Project[] = [
     role: "Full-stack build",
     status: "Private operational tool",
     summary:
-      "A practical attendance surface for daily visibility, handovers, and quick status checks. Public visuals stay anonymized with demo rows only.",
+      "Built for my SCDF division. The website provides a dashboard to view officer statuses, while Telegram is where officers key in their statuses using the bot.",
     stack: ["JavaScript", "React", "Vite", "Express", "Prisma", "Postgres", "Telegram Bot"],
     tone: "tappd",
     repoHref: "https://github.com/fathiryudh/tappd",
@@ -45,7 +52,7 @@ const projects: Project[] = [
     role: "Product and engineering",
     status: "Live site",
     summary:
-      "A booking website for checking haircut availability, sending requests, and keeping appointment updates close to Telegram.",
+      "The website showcases clients, pricing, about, and portfolio. Booking is handled entirely on Telegram through a booking bot I built.",
     stack: ["TypeScript", "Next.js", "Supabase", "Tailwind CSS", "Telegram", "Vercel"],
     tone: "draaqutz",
     href: "https://draaqutz.vercel.app/",
@@ -111,53 +118,70 @@ const sideNotes = [
   "Spent time with Singapore national baseball",
 ];
 
-const technicalSkills = {
-  stack: [
-    "JavaScript",
-    "TypeScript",
-    "Dart",
-    "React",
-    "Next.js",
-    "Vite",
-    "Flutter",
-    "Tailwind CSS",
-  ],
-  backend: ["Express", "Prisma", "Postgres", "Supabase", "Hive", "Provider", "Vercel"],
-  workflow: ["Telegram Bot API", "Telegram workflows", "Local Notifications", "Geolocation", "REST APIs"],
-};
+const technicalSkills = [
+  {
+    label: "Core stack",
+    description: "Frontend and app foundations",
+    items: ["JavaScript", "TypeScript", "Dart", "React", "Next.js", "Vite", "Flutter", "Tailwind CSS"],
+  },
+  {
+    label: "Backend and data",
+    description: "Storage, APIs, and deployment",
+    items: ["Express", "PHP", "Prisma", "Postgres", "Supabase", "Hive", "Provider", "Vercel"],
+  },
+  {
+    label: "Workflow layer",
+    description: "Automation and product plumbing",
+    items: ["Telegram Bot API", "Telegram workflows", "Local Notifications", "Geolocation", "REST APIs"],
+  },
+];
+
+const FULL_NAME = "Muhammad Fathir Yudhistira";
+
+function useTypingEffect(text: string, speed = 55) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const effectiveSpeed = reduceMotion ? 0 : speed;
+    let i = 0;
+
+    const timer = setInterval(() => {
+      i = reduceMotion ? text.length : i + 1;
+      setDisplayed(text.slice(0, i));
+      if (i >= text.length) {
+        clearInterval(timer);
+        setDone(true);
+      }
+    }, effectiveSpeed);
+
+    return () => clearInterval(timer);
+  }, [text, speed]);
+
+  return { displayed, done };
+}
 
 function TappdVisual() {
-  const rows = [
-    ["Demo officer 01", "In", "Alpha"],
-    ["Demo officer 02", "Out", "Medical"],
-    ["Demo officer 03", "WFH", "Admin"],
-    ["Demo officer 04", "In", "Ops"],
-  ];
-
   return (
-    <div className="preview preview--tappd" aria-label="Anonymized Tappd attendance preview">
+    <div className="preview preview--tappd" aria-label="Tappd attendance dashboard preview">
       <div className="mini-window">
         <div className="mini-window__bar">
           <span />
           <span />
           <span />
         </div>
-        <div className="tappd-table">
-          <div className="tappd-table__head">
-            <span>Name</span>
-            <span>Status</span>
-            <span>Team</span>
-          </div>
-          {rows.map(([name, status, team]) => (
-            <div className="tappd-table__row" key={name}>
-              <strong>{name}</strong>
-              <span>{status}</span>
-              <span>{team}</span>
-            </div>
-          ))}
-        </div>
+        <Image
+          src="/Dashboard.png"
+          alt="Tappd attendance dashboard"
+          width={1440}
+          height={900}
+          sizes="(max-width: 760px) 88vw, 350px"
+          quality={75}
+          style={{ display: "block", width: "100%", height: "auto", filter: "blur(2px)" }}
+        />
       </div>
-      <p>Demo data only</p>
+      <p>Private operational tool</p>
     </div>
   );
 }
@@ -165,14 +189,17 @@ function TappdVisual() {
 function DraaqutzVisual() {
   return (
     <div className="preview preview--draaqutz" aria-label="Draaqutz website and Telegram booking preview">
-      <div className="site-screenshot">
-        <Image
-          src="/draaqutz-site.png"
-          alt="Draaqutz haircut booking website screenshot"
-          width={1280}
-          height={900}
-          sizes="(max-width: 760px) 88vw, 390px"
-        />
+      <div className="site-screenshot site-screenshot--scrollable">
+        <div className="site-screenshot__scroll">
+          <Image
+            src="/draaqutz-site.jpeg"
+            alt="Draaqutz haircut booking website screenshot"
+            width={2880}
+            height={9774}
+            sizes="(max-width: 760px) 88vw, 390px"
+            quality={75}
+          />
+        </div>
       </div>
       <div className="telegram-card" aria-label="Telegram bot slot preview">
         <div className="telegram-card__top">
@@ -220,6 +247,7 @@ function ProjectVisual({ tone }: { tone: Project["tone"] }) {
 export default function PortfolioExperience() {
   const rootRef = useRef<HTMLElement | null>(null);
   const [activeProject, setActiveProject] = useState(projects[0].tone);
+  const { displayed, done } = useTypingEffect(FULL_NAME);
 
   const active = useMemo(
     () => projects.find((project) => project.tone === activeProject) ?? projects[0],
@@ -228,12 +256,12 @@ export default function PortfolioExperience() {
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root) return undefined;
+    if (!root) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion) {
       root.querySelectorAll(".reveal").forEach((node) => node.classList.add("is-visible"));
-      return undefined;
+      return;
     }
 
     root.classList.add("is-enhanced");
@@ -266,18 +294,25 @@ export default function PortfolioExperience() {
           FY
         </a>
         <div className="nav-links">
-          <a href="#about">About</a>
-          <a href="#projects">Projects</a>
-          <a href="#experience">Experience</a>
-          <a className="nav-icon-link" href="https://github.com/fathiryudh" target="_blank" rel="noreferrer" aria-label="GitHub profile" title="GitHub">
-            <FileCode size={18} aria-hidden="true" />
-          </a>
-          <a className="nav-icon-link" href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
-            <BriefcaseBusiness size={18} aria-hidden="true" />
-          </a>
-          <a className="nav-icon-link" href="mailto:fathiryudh03@gmail.com" aria-label="Email Fathir" title="Email">
-            <Mail size={18} aria-hidden="true" />
-          </a>
+          <Magnetic><a href="#about">About</a></Magnetic>
+          <Magnetic><a href="#projects">Projects</a></Magnetic>
+          <Magnetic><a href="#experience">Experience</a></Magnetic>
+          <Magnetic><Link href="/contact">Contact</Link></Magnetic>
+          <Magnetic>
+            <a className="nav-icon-link" href="https://github.com/fathiryudh" target="_blank" rel="noreferrer" aria-label="GitHub profile" title="GitHub">
+              <FileCode size={18} aria-hidden="true" />
+            </a>
+          </Magnetic>
+          <Magnetic>
+            <a className="nav-icon-link" href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
+              <BriefcaseBusiness size={18} aria-hidden="true" />
+            </a>
+          </Magnetic>
+          <Magnetic>
+            <a className="nav-icon-link" href="mailto:fathiryudh03@gmail.com" aria-label="Email Fathir" title="Email">
+              <Mail size={18} aria-hidden="true" />
+            </a>
+          </Magnetic>
         </div>
       </nav>
 
@@ -285,10 +320,9 @@ export default function PortfolioExperience() {
         <div className="hero-copy">
           <p className="eyebrow reveal">Portfolio / Singapore</p>
           <h1 className="typing-line reveal" aria-label="Muhammad Fathir Yudhistira">
-            <span className="typing-content">
-              Muhammad Fathir
-              <br />
-              Yudhistira
+            <span className="typing-content typing-content--js">
+              {displayed}
+              <span className={`typing-cursor ${done ? "typing-cursor--blink" : ""}`}>|</span>
             </span>
           </h1>
           <p className="hero-subtitle reveal">Software builder · Incoming SIT Software Engineering student</p>
@@ -297,14 +331,18 @@ export default function PortfolioExperience() {
             to ship, useful enough to keep around, and polished enough that people actually want to use it.
           </p>
           <div className="hero-actions reveal">
-            <a className="button button--primary" href="#projects">
-              View projects
-              <ArrowUpRight size={17} aria-hidden="true" />
-            </a>
-            <a className="button button--ghost" href="mailto:fathiryudh03@gmail.com">
-              Contact
-              <Mail size={17} aria-hidden="true" />
-            </a>
+            <Magnetic>
+              <a className="button button--primary" href="#projects">
+                View projects
+                <ArrowUpRight size={17} aria-hidden="true" />
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <Link className="button button--ghost" href="/contact">
+                Contact
+                <Mail size={17} aria-hidden="true" />
+              </Link>
+            </Magnetic>
           </div>
         </div>
 
@@ -327,6 +365,8 @@ export default function PortfolioExperience() {
         </aside>
       </section>
 
+      <LetterCollision />
+
       <section id="content" className="content-shell">
         <section id="about" className="section about-section">
           <div className="section-heading reveal">
@@ -334,16 +374,9 @@ export default function PortfolioExperience() {
             <h2>Practical software with a little personality.</h2>
           </div>
           <div className="about-grid">
-            <div className="about-copy reveal">
-              <p>
-                I like building tools that reduce small daily friction: attendance views, booking flows, bot commands,
-                admin screens, and app sketches that can grow into something real.
-              </p>
-              <p>
-                Outside the code, I have a competitive thread from gaming, youth golf tournaments, softball, and time
-                with Singapore national baseball. These days, I am serving NS in SCDF and preparing for Software
-                Engineering at SIT in August 2026.
-              </p>
+            <div className="about-copy">
+              <WordSlideUp text="I like building tools that reduce small daily friction: attendance views, booking flows, bot commands, admin screens, and app sketches that can grow into something real." />
+              <WordSlideUp text="Outside the code, I have a competitive thread from gaming, youth golf tournaments, softball, and time with Singapore national baseball. These days, I am serving NS in SCDF and preparing for Software Engineering at SIT in August 2026." />
             </div>
             <div className="side-notes reveal" aria-label="Personal side notes">
               {sideNotes.map((note) => (
@@ -359,43 +392,7 @@ export default function PortfolioExperience() {
             <h2>Technical skills, grouped by how I actually use them.</h2>
           </div>
 
-          <div className="skills-grid">
-            <article className="skills-panel reveal">
-              <div className="skills-panel__title">
-                <span>Core stack</span>
-                <strong>Frontend and app foundations</strong>
-              </div>
-              <div className="skill-chips">
-                {technicalSkills.stack.map((skill) => (
-                  <span key={skill}>{skill}</span>
-                ))}
-              </div>
-            </article>
-
-            <article className="skills-panel reveal">
-              <div className="skills-panel__title">
-                <span>Backend and data</span>
-                <strong>Storage, APIs, and deployment</strong>
-              </div>
-              <div className="skill-chips">
-                {technicalSkills.backend.map((skill) => (
-                  <span key={skill}>{skill}</span>
-                ))}
-              </div>
-            </article>
-
-            <article className="skills-panel reveal">
-              <div className="skills-panel__title">
-                <span>Workflow layer</span>
-                <strong>Automation and product plumbing</strong>
-              </div>
-              <div className="skill-chips">
-                {technicalSkills.workflow.map((skill) => (
-                  <span key={skill}>{skill}</span>
-                ))}
-              </div>
-            </article>
-          </div>
+          <OrbitIcons groups={technicalSkills} />
         </section>
 
         <section id="projects" className="section projects-section">
@@ -465,6 +462,8 @@ export default function PortfolioExperience() {
           </div>
         </section>
 
+        <SlidingImages />
+
         <section id="experience" className="section experience-section">
           <div className="section-heading reveal">
             <p className="eyebrow">Experience</p>
@@ -511,18 +510,24 @@ export default function PortfolioExperience() {
           <h2>Open to useful builds, clean dashboards, and practical app ideas.</h2>
         </div>
         <div className="footer-actions">
-          <a href="mailto:fathiryudh03@gmail.com">
-            <Mail size={18} aria-hidden="true" />
-            Email
-          </a>
-          <a href="https://github.com/fathiryudh" target="_blank" rel="noreferrer">
-            <FileCode size={18} aria-hidden="true" />
-            GitHub
-          </a>
-          <a href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer">
-            <BriefcaseBusiness size={18} aria-hidden="true" />
-            LinkedIn
-          </a>
+          <Magnetic>
+            <Link href="/contact">
+              <Mail size={18} aria-hidden="true" />
+              Get in touch
+            </Link>
+          </Magnetic>
+          <Magnetic>
+            <a href="https://github.com/fathiryudh" target="_blank" rel="noreferrer">
+              <FileCode size={18} aria-hidden="true" />
+              GitHub
+            </a>
+          </Magnetic>
+          <Magnetic>
+            <a href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer">
+              <BriefcaseBusiness size={18} aria-hidden="true" />
+              LinkedIn
+            </a>
+          </Magnetic>
         </div>
         <div className="footer-meta">
           <span>Muhammad Fathir Yudhistira</span>
