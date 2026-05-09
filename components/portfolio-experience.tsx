@@ -16,6 +16,7 @@ import {
   UserRound,
 } from "lucide-react";
 
+import { SiX } from "react-icons/si";
 import Magnetic from "@/components/animations/magnetic";
 import LetterCollision from "@/components/animations/letter-collision";
 import WordSlideUp from "@/components/animations/word-slide-up";
@@ -309,6 +310,11 @@ export default function PortfolioExperience() {
             </a>
           </Magnetic>
           <Magnetic>
+            <a className="nav-icon-link" href="https://x.com/fathiryudh" target="_blank" rel="noreferrer" aria-label="X profile" title="X / Twitter">
+              <SiX size={16} />
+            </a>
+          </Magnetic>
+          <Magnetic>
             <a className="nav-icon-link" href="mailto:fathiryudh03@gmail.com" aria-label="Email Fathir" title="Email">
               <Mail size={18} aria-hidden="true" />
             </a>
@@ -526,6 +532,12 @@ export default function PortfolioExperience() {
             <a href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer">
               <BriefcaseBusiness size={18} aria-hidden="true" />
               LinkedIn
+            </a>
+          </Magnetic>
+          <Magnetic>
+            <a href="https://x.com/fathiryudh" target="_blank" rel="noreferrer">
+              <SiX size={16} />
+              X / Twitter
             </a>
           </Magnetic>
         </div>
