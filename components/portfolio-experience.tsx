@@ -11,9 +11,11 @@ import {
   GraduationCap,
   Mail,
   MapPin,
+  Menu,
   MessageCircle,
   Radio,
   UserRound,
+  X,
 } from "lucide-react";
 
 import { SiGithub, SiX } from "react-icons/si";
@@ -249,6 +251,7 @@ function ProjectVisual({ tone }: { tone: Project["tone"] }) {
 export default function PortfolioExperience() {
   const rootRef = useRef<HTMLElement | null>(null);
   const [activeProject, setActiveProject] = useState(projects[0].tone);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { displayed, done } = useTypingEffect(FULL_NAME);
 
   const active = useMemo(
@@ -292,34 +295,48 @@ export default function PortfolioExperience() {
       </a>
 
       <nav className="nav-shell" aria-label="Primary navigation">
-        <a href="#top" className="nav-mark" aria-label="Muhammad Fathir Yudhistira home">
-          FY
-        </a>
-        <div className="nav-links">
-          <Magnetic><a href="#about">About</a></Magnetic>
-          <Magnetic><a href="#projects">Projects</a></Magnetic>
-          <Magnetic><a href="#experience">Experience</a></Magnetic>
-          <Magnetic><Link href="/contact">Contact</Link></Magnetic>
-          <Magnetic>
-            <a className="nav-icon-link" href="https://github.com/fathiryudh" target="_blank" rel="noreferrer" aria-label="GitHub profile" title="GitHub">
-              <SiGithub size={18} />
-            </a>
-          </Magnetic>
-          <Magnetic>
-            <a className="nav-icon-link" href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
-              <FaLinkedinIn size={18} />
-            </a>
-          </Magnetic>
-          <Magnetic>
-            <a className="nav-icon-link" href="https://x.com/fathiryudh" target="_blank" rel="noreferrer" aria-label="X profile" title="X / Twitter">
-              <SiX size={16} />
-            </a>
-          </Magnetic>
-          <Magnetic>
-            <a className="nav-icon-link" href="mailto:fathiryudh03@gmail.com" aria-label="Email Fathir" title="Email">
-              <Mail size={18} aria-hidden="true" />
-            </a>
-          </Magnetic>
+        <div className="nav-bar">
+          <a href="#top" className="nav-mark" aria-label="Muhammad Fathir Yudhistira home">
+            FY
+          </a>
+          <button
+            className="nav-burger"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+        <div className={`nav-links${menuOpen ? " nav-links--open" : ""}`}>
+          <div className="nav-text-links">
+            <Magnetic><a href="#about" onClick={() => setMenuOpen(false)}>About</a></Magnetic>
+            <Magnetic><a href="#projects" onClick={() => setMenuOpen(false)}>Projects</a></Magnetic>
+            <Magnetic><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a></Magnetic>
+            <Magnetic><Link href="/contact" onClick={() => setMenuOpen(false)}>Contact</Link></Magnetic>
+          </div>
+          <div className="nav-icon-row">
+            <Magnetic>
+              <a className="nav-icon-link" href="https://github.com/fathiryudh" target="_blank" rel="noreferrer" aria-label="GitHub profile" title="GitHub">
+                <SiGithub size={18} />
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a className="nav-icon-link" href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
+                <FaLinkedinIn size={18} />
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a className="nav-icon-link" href="https://x.com/fathiryudh" target="_blank" rel="noreferrer" aria-label="X profile" title="X / Twitter">
+                <SiX size={16} />
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a className="nav-icon-link" href="mailto:fathiryudh03@gmail.com" aria-label="Email Fathir" title="Email">
+                <Mail size={18} aria-hidden="true" />
+              </a>
+            </Magnetic>
+          </div>
         </div>
       </nav>
 
@@ -351,6 +368,29 @@ export default function PortfolioExperience() {
               </Link>
             </Magnetic>
           </div>
+          <svg
+            className="hero-doodle-arrow reveal"
+            width="54"
+            height="36"
+            viewBox="0 0 54 36"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M48,30 C38,18 22,6 8,12"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+            <path
+              d="M14,6 L8,12 L15,17"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="48" cy="30" r="3" fill="currentColor" />
+          </svg>
         </div>
 
         <aside className="hero-panel reveal" aria-label="Quick profile">
