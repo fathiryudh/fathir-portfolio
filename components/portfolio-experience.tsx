@@ -77,10 +77,10 @@ const projects: Project[] = [
 
 const experience = [
   {
-    period: "Now",
+    period: "Completed",
     title: "SCDF National Service",
     detail:
-      "Serving NS while keeping practical side projects moving: Telegram bots, dashboards, booking flows, and small web apps.",
+      "Served NS in SCDF. Kept side projects running throughout — Telegram bots, dashboards, booking flows, and small web apps.",
     icon: Radio,
   },
   {
@@ -97,7 +97,7 @@ const education = [
     period: "Aug 2026",
     title: "Singapore Institute of Technology",
     detail:
-      "Incoming Bachelor of Engineering with Honours in Information and Communications Technology, majoring in Software Engineering.",
+      "Bachelor of Engineering with Honours in Information and Communications Technology, majoring in Software Engineering.",
   },
   {
     period: "2021 - 2024",
@@ -114,8 +114,8 @@ const education = [
 ];
 
 const sideNotes = [
-  "Serving NS in SCDF",
-  "Incoming SIT Software Engineering student, August 2026",
+  "Singapore-based software builder",
+  "SIT Software Engineering student",
   "Grew up gaming, then started building things",
   "Played youth golf tournaments internationally",
   "Softball in secondary school",
@@ -349,7 +349,7 @@ export default function PortfolioExperience() {
               <span className={`typing-cursor ${done ? "typing-cursor--blink" : ""}`}>|</span>
             </span>
           </h1>
-          <p className="hero-subtitle reveal">Software builder · Incoming SIT Software Engineering student</p>
+          <p className="hero-subtitle reveal">Software builder · SIT Software Engineering student</p>
           <p className="hero-intro reveal">
             I build practical web apps, Telegram bots, dashboards, and mobile ideas. The work is usually small enough
             to ship, useful enough to keep around, and polished enough that people actually want to use it.
@@ -400,7 +400,7 @@ export default function PortfolioExperience() {
             </div>
             <div>
               <span>Current lane</span>
-              <strong>NS, software side projects, SIT next</strong>
+              <strong>Building software, studying at SIT</strong>
             </div>
           </div>
           <div className="quiet-list">
@@ -423,7 +423,7 @@ export default function PortfolioExperience() {
           <div className="about-grid">
             <div className="about-copy">
               <WordSlideUp text="I like building tools that reduce small daily friction: attendance views, booking flows, bot commands, admin screens, and app sketches that can grow into something real." />
-              <WordSlideUp text="Outside the code, I have a competitive thread from gaming, youth golf tournaments, softball, and time with Singapore national baseball. These days, I am serving NS in SCDF and preparing for Software Engineering at SIT in August 2026." />
+              <WordSlideUp text="Outside the code, I have a competitive thread from gaming, youth golf tournaments, softball, and time with Singapore national baseball. Studying Software Engineering at SIT." />
             </div>
             <div className="side-notes reveal" aria-label="Personal side notes">
               {sideNotes.map((note) => (

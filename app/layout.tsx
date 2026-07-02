@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://fathiryudh.com"),
   title: "Muhammad Fathir Yudhistira | Software Builder",
   description:
-    "Portfolio of Muhammad Fathir Yudhistira — practical web apps, Telegram bots, dashboards, and mobile ideas. Incoming SIT Software Engineering student based in Singapore.",
+    "Portfolio of Muhammad Fathir Yudhistira — practical web apps, Telegram bots, dashboards, and mobile ideas. Software Engineering student at SIT, based in Singapore.",
   keywords: ["Muhammad Fathir Yudhistira", "software engineer", "portfolio", "Singapore", "Next.js", "React", "Telegram bots", "web developer"],
   authors: [{ name: "Muhammad Fathir Yudhistira" }],
   openGraph: {
