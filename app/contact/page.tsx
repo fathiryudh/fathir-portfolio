@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import TextDisperse from "@/components/animations/text-disperse";
+import { torn } from "@/components/zine/paper";
 
 export default function ContactPage() {
   const [subject, setSubject] = useState("");
@@ -63,7 +64,7 @@ export default function ContactPage() {
         </div>
       </div>
 
-      <section className="contact-form-section">
+      <section className="contact-form-section" style={{ clipPath: torn(900, 2.5) }}>
         <h2 className="contact-form__title">Send a message</h2>
         <form className="contact-form" onSubmit={handleSubmit}>
           <div className="contact-form__field">

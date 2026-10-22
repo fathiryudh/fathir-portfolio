@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const phrases = ["Software builder", "practical tools", "real products"];
+const phrases = ["You need it", "I build it"];
 
 function seededRandom(seed: number) {
   const x = Math.sin(seed) * 10000;
