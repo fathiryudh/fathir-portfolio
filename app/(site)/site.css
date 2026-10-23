@@ -1689,11 +1689,6 @@ html[data-theme="dark"] .hero__wordmark--white {
   padding: 1rem;
 }
 
-.lib-demo__signature {
-  width: min(80%, 520px);
-  color: var(--c-ink);
-}
-
 .lib-demo__reveal {
   display: grid;
   gap: 0.75rem;
