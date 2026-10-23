@@ -1,0 +1,629 @@
+/* Contact letter (components/contact/letter.tsx): a form dressed as a letter on a desk, with a
+   signature pad slip and a postage receipt stub. Uses the shared --c-* tokens from globals.css. */
+
+/* A letter on a desk: the sheet is a form set in mono on a 30px baseline so
+   every field, rule and textarea line lands on the same grid. */
+.letter-desk {
+  --bond: #fcfbf8;
+  --thermal: #ffffff;
+  --pen: #161614;
+  --pen-muted: rgb(13 13 13 / 58%);
+  --rule: rgb(13 13 13 / 22%);
+  --spot: var(--c-accent);
+  position: relative;
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding-block: 4rem 6rem;
+  container: desk / inline-size;
+}
+
+.letter {
+  position: relative;
+  width: min(100%, 760px);
+  margin-inline: auto;
+  padding: 8cqi 9cqi 7cqi;
+  background: var(--bond);
+  color: var(--pen);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 30px;
+  letter-spacing: -0.01em;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 18%),
+    0 24px 50px -20px rgb(0 0 0 / 26%);
+  container-type: inline-size;
+}
+
+/* Paper tooth: a faint fractal-noise wash multiplied over the bond. */
+.letter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+.letter ::selection {
+  background: rgb(227 38 43 / 16%);
+  color: var(--pen);
+}
+
+.letter input,
+.letter textarea {
+  min-inline-size: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+.letter input::placeholder,
+.letter textarea::placeholder {
+  color: var(--pen-muted);
+  opacity: 0.7;
+}
+
+/* Autofill would otherwise paint a pale-blue block on the paper. */
+.letter input:-webkit-autofill {
+  -webkit-text-fill-color: var(--pen);
+  transition: background-color 9999s ease-out;
+}
+
+.letter__sr {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.letter__rule {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 1px;
+  background: var(--rule);
+  pointer-events: none;
+  transition: background-color 0.2s ease;
+}
+
+.letter__head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-block-end: 1.25rem;
+  line-height: 1.5;
+}
+
+.letter__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: clamp(52px, 9cqi, 68px);
+  aspect-ratio: 1;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 3.4cqi, 1.7rem);
+  letter-spacing: 0.02em;
+}
+
+.letter__name {
+  margin: 0 0 4px;
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.letter__line {
+  margin: 0;
+  color: var(--pen-muted);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.letter__line a {
+  color: inherit;
+  text-decoration: none;
+  text-transform: none;
+}
+
+.letter__line a:hover,
+.letter__line a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.letter__date {
+  margin: 2rem 0 0;
+  color: var(--pen-muted);
+  font-size: 12px;
+}
+
+.letter__salut {
+  margin: 0.5rem 0 0;
+  font-size: 15px;
+}
+
+.letter__label {
+  color: var(--pen-muted);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+/* Radios drawn as typed checkboxes: [ ] and [X]. */
+.letter__re {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 1.25rem;
+  min-inline-size: 0;
+  margin: 1rem 0 0;
+  padding: 0 0 0 8ch;
+  border: 0;
+}
+
+.letter__re legend {
+  position: absolute;
+  inset-inline-start: 0;
+  padding: 0;
+}
+
+.letter__kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.letter__kind input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.letter__box::before {
+  content: "[ ]";
+  letter-spacing: 0;
+}
+
+.letter__kind input:checked ~ .letter__box::before {
+  content: "[X]";
+}
+
+.letter__kind input:focus-visible ~ .letter__box {
+  outline: 2px solid var(--pen);
+  outline-offset: 2px;
+}
+
+.letter__field {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-block-start: 0.5rem;
+  padding-block-end: 1px;
+}
+
+.letter__field .letter__label {
+  flex: none;
+  min-inline-size: 4.85em;
+}
+
+.letter__field input {
+  flex: 1;
+}
+
+.letter__field:focus-within .letter__rule,
+.letter__sig:focus-visible .letter__rule {
+  background: var(--pen);
+}
+
+/* Ruled lines come from one repeating gradient, pinned to the 30px line-height. */
+.letter__body {
+  display: block;
+  margin-block-start: 1.25rem;
+  background: repeating-linear-gradient(transparent 0 29px, var(--rule) 29px 30px);
+}
+
+.letter__body:focus-within {
+  background-image: repeating-linear-gradient(transparent 0 29px, rgb(13 13 13 / 42%) 29px 30px);
+}
+
+.letter__body textarea {
+  display: block;
+  inline-size: 100%;
+  min-block-size: 180px;
+  overflow: hidden;
+  resize: none;
+  line-height: 30px;
+}
+
+.letter__close {
+  margin: 1.5rem 0 0;
+  font-size: 15px;
+}
+
+.letter__sig {
+  position: relative;
+  block-size: 120px;
+  margin-block-start: 0.25rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.letter-desk[data-status="posted"] .letter__sig {
+  cursor: default;
+}
+
+.letter__ink {
+  position: absolute;
+  inset: 0;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+}
+
+.letter__ghost {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-end: 0.5rem;
+  color: var(--pen-muted);
+  font-family: var(--font-scrawl);
+  font-size: 15px;
+  opacity: 0.7;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.letter__sig[data-signed] .letter__ghost {
+  opacity: 0;
+}
+
+.letter__typed {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block-start: 0.5rem;
+}
+
+.letter__typed input {
+  flex: 1;
+  font-size: 13px;
+}
+
+.letter__typed input:focus {
+  box-shadow: 0 1px 0 var(--pen);
+}
+
+.letter__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--pen-muted);
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.letter__link:hover,
+.letter__link:focus-visible {
+  color: var(--pen);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.letter__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-block-start: 2.5rem;
+}
+
+.letter__status {
+  margin: 0;
+  color: var(--pen-muted);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+
+.letter-desk[data-status="posted"] .letter__status {
+  color: var(--pen);
+}
+
+.letter__send {
+  padding: 0.35rem 0.9rem;
+  border: 0;
+  border-radius: 3px;
+  background: var(--pen);
+  color: var(--bond);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    scale 0.2s ease;
+}
+
+.letter__send:hover,
+.letter__send:focus-visible {
+  background: var(--spot);
+}
+
+.letter__send:active {
+  scale: 0.96;
+}
+
+.letter__note {
+  margin: 6px 0 0;
+  color: var(--spot);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+}
+
+.letter-desk[data-error="email"] [data-field="email"] .letter__rule,
+.letter-desk[data-error="sign"] .letter__sig .letter__rule {
+  background: var(--spot);
+}
+
+.letter-desk[data-error="body"] .letter__body {
+  background-image: repeating-linear-gradient(transparent 0 29px, var(--spot) 29px 30px);
+}
+
+.letter-desk[data-status="posted"] .letter input,
+.letter-desk[data-status="posted"] .letter textarea {
+  color: var(--pen-muted);
+}
+
+.letter__stamp {
+  position: absolute;
+  inset-inline-end: 6cqi;
+  inset-block-end: 22cqi;
+  inline-size: clamp(150px, 30cqi, 230px);
+  color: var(--spot);
+  font-family: var(--font-mono);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  rotate: -9deg;
+}
+
+.letter__stamp svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+/* The receipt stub: thermal paper, dotted rows, a CSS-only barcode. */
+.letter-stub {
+  --pen: #161614;
+  --pen-muted: #5b5b58;
+  --rule: rgb(22 22 20 / 30%);
+  position: relative;
+  z-index: 2;
+  inline-size: min(100% - 2rem, 280px);
+  margin: 2.5rem auto 0;
+  padding: 26px 22px 22px;
+  background: #fff;
+  color: #161614;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 14%),
+    0 16px 34px -16px rgb(0 0 0 / 24%);
+  rotate: 2deg;
+  /* Zig-zag tear along the top edge. */
+  clip-path: polygon(0 8px, 4% 0, 8% 8px, 12% 0, 16% 8px, 20% 0, 24% 8px, 28% 0, 32% 8px, 36% 0, 40% 8px, 44% 0, 48% 8px, 52% 0, 56% 8px, 60% 0, 64% 8px, 68% 0, 72% 8px, 76% 0, 80% 8px, 84% 0, 88% 8px, 92% 0, 96% 8px, 100% 0, 100% 100%, 0 100%);
+}
+
+.letter-stub p {
+  margin: 0;
+}
+
+.letter-stub__head {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.letter-stub__sub {
+  padding-block-end: 10px;
+  border-block-end: 1px dashed var(--rule);
+  color: var(--pen-muted);
+  font-size: 10px;
+}
+
+.letter-stub__rows {
+  margin: 12px 0 0;
+}
+
+.letter-stub__rows > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-block: 5px;
+  border-block-end: 1px dotted var(--rule);
+}
+
+.letter-stub__rows dt {
+  color: var(--pen-muted);
+}
+
+.letter-stub__rows dd {
+  margin: 0;
+  text-align: right;
+}
+
+.letter-stub__rows dd[data-empty] {
+  color: var(--pen-muted);
+}
+
+.letter-stub__bars {
+  display: block;
+  block-size: 26px;
+  margin-block-start: 16px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--pen) 0 2px,
+    transparent 2px 4px,
+    var(--pen) 4px 5px,
+    transparent 5px 9px,
+    var(--pen) 9px 12px,
+    transparent 12px 14px
+  );
+}
+
+.letter-stub__foot {
+  margin-block-start: 8px;
+  color: var(--pen-muted);
+  font-size: 10px;
+}
+
+/* Narrow desks (phones): no room for the stub beside the sheet, so it's left off. */
+@container desk (width < 760px) {
+  .letter-stub {
+    display: none;
+  }
+}
+
+/* Wide desks: the stub sits up against the sheet's top-right corner, overlapping it. */
+@container desk (width >= 760px) {
+  /* Declared on the children: cqw on the container itself would resolve
+     against its ancestor, not the desk. */
+  .letter,
+  .letter-stub {
+    --sheet: clamp(560px, 62cqw, 760px);
+  }
+
+  .letter {
+    inline-size: var(--sheet);
+    margin-inline-start: calc((100cqw - var(--sheet) * 1.2) / 2);
+  }
+
+  .letter-stub {
+    position: absolute;
+    inset-block-start: 1.5rem;
+    inset-inline-start: calc((100cqw - var(--sheet) * 1.2) / 2 + var(--sheet) * 0.84);
+    inline-size: calc(var(--sheet) * 0.34);
+    margin: 0;
+  }
+}
+
+.letter-slip {
+  inline-size: min(92vw, 640px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: var(--bond, #f1ede3);
+  color: var(--pen, #0d0d0d);
+  font-family: var(--font-mono);
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 40%),
+    0 30px 80px rgb(0 0 0 / 55%);
+}
+
+.letter-slip::backdrop {
+  background: rgb(10 10 10 / 60%);
+}
+
+.letter-slip__in {
+  padding: 22px 26px 20px;
+}
+
+.letter-slip__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+}
+
+.letter-slip__hint {
+  color: var(--pen-muted);
+}
+
+.letter-slip__pad {
+  position: relative;
+  block-size: clamp(170px, 32vw, 240px);
+  margin-block-start: 0.75rem;
+  border-block-end: 1px solid var(--rule);
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.letter-slip__pad canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.letter-slip__x {
+  position: absolute;
+  inset-inline-start: 2px;
+  inset-block-end: 6px;
+  color: var(--pen-muted);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.letter-slip__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  margin-block-start: 1rem;
+}
+
+@media (max-width: 767px) {
+  /* Phones: the sheet fills the screen with an even 1rem margin and the page ends with it,
+     no empty desk to scroll into. */
+  .letter-desk {
+    padding-block: 1rem;
+  }
+
+  .letter,
+  .letter__typed input {
+    font-size: 16px;
+  }
+
+  .letter {
+    padding: 7cqi 6cqi 6cqi;
+  }
+
+  .letter__foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .letter-slip__head {
+    flex-direction: column;
+    gap: 2px;
+  }
+}

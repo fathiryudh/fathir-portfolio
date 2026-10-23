@@ -1,21 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import TextDisperse from "@/components/animations/text-disperse";
-import { torn } from "@/components/zine/paper";
+import Letter from "@/components/contact/letter";
 
 export default function ContactPage() {
-  const [subject, setSubject] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  // The scroll cue steps aside once the visitor has started scrolling toward the letter.
+  const [scrolled, setScrolled] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const mailto = `mailto:fathiryudh03@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`From: ${email}\n\n${message}`)}`;
-    window.location.href = mailto;
-  }
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <div className="contact-page">
@@ -62,47 +60,23 @@ export default function ContactPage() {
             </a>
           </div>
         </div>
+
+        <a href="#letter" className={`scroll-cue${scrolled ? " is-gone" : ""}`}>
+          <span className="scroll-cue__track" aria-hidden="true">
+            <span className="scroll-cue__dot" />
+            <span className="scroll-cue__dot" />
+            <span className="scroll-cue__dot" />
+          </span>
+          <span className="scroll-cue__text">
+            <span className="scroll-cue__title">Scroll down to write me a letter</span>
+            <span className="scroll-cue__sub">Fill it in, sign it, post it. It opens in your mail app, ready to send.</span>
+          </span>
+        </a>
       </div>
 
-      <section className="contact-form-section" style={{ clipPath: torn(900, 2.5) }}>
-        <h2 className="contact-form__title">Send a message</h2>
-        <form className="contact-form" onSubmit={handleSubmit}>
-          <div className="contact-form__field">
-            <label htmlFor="subject">Subject</label>
-            <input
-              id="subject"
-              type="text"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              required
-            />
-          </div>
-          <div className="contact-form__field">
-            <label htmlFor="email">Your email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="contact-form__field">
-            <label htmlFor="message">Message</label>
-            <textarea
-              id="message"
-              rows={5}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="contact-form__submit">
-            Open in mail client
-            <ArrowUpRight size={17} aria-hidden="true" />
-          </button>
-        </form>
-      </section>
+      <div id="letter">
+        <Letter />
+      </div>
     </div>
   );
 }

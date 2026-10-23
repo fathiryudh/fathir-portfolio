@@ -1,0 +1,102 @@
+.stage {
+  position: absolute;
+  inset: 0;
+  container-type: size;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  justify-items: center;
+  gap: 0.9rem;
+  padding: 1.5rem 1.5rem 1.25rem;
+}
+
+/* The pad keeps the drawing's exact aspect ratio, so nothing is letterboxed. */
+.pad {
+  position: relative;
+  align-self: center;
+  width: min(100%, 44rem, calc((100cqh - 7rem) * var(--pad-w) / var(--pad-h)));
+  aspect-ratio: var(--pad-ratio);
+  display: grid;
+  place-items: center;
+}
+
+.surface {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px dashed var(--c-rule);
+  border-radius: 12px;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+}
+
+.baseline {
+  stroke: var(--c-ink);
+  stroke-opacity: 0.15;
+  stroke-width: 2;
+}
+
+.ink {
+  fill: none;
+  stroke: var(--c-ink);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Playback sits exactly over the pad (same viewBox and aspect), so it writes where you drew. */
+.playback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--c-ink);
+  pointer-events: none;
+}
+
+.playback svg {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.prompt {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  pointer-events: none;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.button {
+  padding: 0.55em 1.2em;
+  border: 1px solid var(--c-ink);
+  border-radius: 999px;
+  background: none;
+  color: var(--c-ink);
+  font: 500 0.75rem var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.hint {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}

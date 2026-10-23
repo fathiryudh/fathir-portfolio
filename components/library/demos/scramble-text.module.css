@@ -1,0 +1,72 @@
+.stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.card {
+  display: grid;
+  gap: 0.6rem;
+  width: min(26rem, 100%);
+}
+
+.label {
+  font: 600 0.625rem var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.35rem 0.35rem 0.85rem;
+  border: 1px solid var(--c-rule);
+  border-radius: 0.75rem;
+  background: var(--c-paper);
+}
+
+.code {
+  flex: 1;
+  font: 500 1rem var(--font-mono);
+  letter-spacing: 0.06em;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 1.9rem;
+  padding: 0 0.7rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--c-ink);
+  color: var(--c-paper);
+  font: 500 0.78rem var(--font-sans);
+  cursor: pointer;
+}
+
+.button:active {
+  scale: 0.97;
+}
+
+.headline {
+  font: 500 0.78rem var(--font-mono);
+  color: var(--c-muted);
+}
+
+.wrap {
+  display: inline-block;
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
