@@ -26,7 +26,8 @@ export type DialControl = { settleTo: (index: number) => void };
 
 // A detent click you can feel on phones. Android: the Vibration API. iOS Safari has no Vibration
 // API, but iOS 18+ plays its native haptic tick when a switch-style checkbox is toggled, so a hidden
-// one is toggled instead (older iOS: nothing happens).
+// one is toggled instead (older iOS: nothing happens). Both only fire inside an input event handler,
+// never from an animation frame, so detents are counted off the pointer, not the rendered dial.
 function createHaptics() {
   if (!window.matchMedia("(pointer: coarse)").matches) return () => {};
   if ("vibrate" in navigator) return () => navigator.vibrate(8);
@@ -84,7 +85,6 @@ export default function Dial({
     const count = items.length;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const haptic = createHaptics() as (() => void) & { dispose?: () => void };
-    let touching = false; // only buzz for detents the user is driving, not the intro wind or a link jump
 
     let cx = 0;
     let cy = 0;
@@ -99,6 +99,15 @@ export default function Dial({
     let pressTarget = 0;
     let snap: gsap.core.Tween | null = null;
     let wheelIdle = 0;
+    let felt = Math.round(target); // last detent the hand was buzzed for
+
+    // Call from input handlers only: buzz when the hand drives target across a detent.
+    const feel = () => {
+      const detent = Math.round(target);
+      if (detent === felt) return;
+      felt = detent;
+      haptic();
+    };
 
     const measure = () => {
       const width = root.clientWidth;
@@ -156,7 +165,6 @@ export default function Dial({
         els[next].classList.add("is-active");
         els[next].setAttribute("aria-selected", "true");
         root.setAttribute("aria-activedescendant", els[next].id);
-        if (touching) haptic();
         onChangeRef.current(next);
       }
     };
@@ -189,7 +197,7 @@ export default function Dial({
       if (reduced) {
         target = to;
         dirty = true;
-        return;
+        return to;
       }
       const from = target;
       const progress = { p: 0 };
@@ -202,11 +210,17 @@ export default function Dial({
         },
         onComplete: () => {
           snap = null;
-          if (!dragging) touching = false;
         },
       });
+      return to;
     };
-    apiRef.current = { settleTo, moved: () => moved };
+    // An item tap is one detent jump however far it travels, so it gets one buzz.
+    const tapTo = (to: number) => {
+      const dest = settleTo(to);
+      if (dest !== felt) haptic();
+      felt = dest;
+    };
+    apiRef.current = { settleTo: tapTo, moved: () => moved };
     if (controlRef) controlRef.current = { settleTo };
 
     const controller = new AbortController();
@@ -219,8 +233,8 @@ export default function Dial({
         snap?.kill();
         snap = null;
         dragging = true;
-        touching = true;
         moved = false;
+        felt = Math.round(target);
         pressY = event.clientY;
         pressTarget = target;
         root.classList.add("is-dragging");
@@ -235,6 +249,7 @@ export default function Dial({
         if (!moved && Math.abs(dy) > 4) moved = true;
         target = pressTarget - dy / STEP_PX;
         dirty = true;
+        feel();
       },
       { signal },
     );
@@ -251,11 +266,11 @@ export default function Dial({
       "wheel",
       (event) => {
         event.preventDefault();
-        touching = true;
         snap?.kill();
         snap = null;
         target += event.deltaY / (STEP_PX * 3);
         dirty = true;
+        feel();
         clearTimeout(wheelIdle);
         wheelIdle = window.setTimeout(() => settleTo(target, true), 150);
       },

@@ -9,6 +9,7 @@ export type LibraryEntry = {
   reference: string;
   tags: string[];
   files: string[];
+  desktopOnly?: boolean; // needs hover or a mouse; phones get a "use a computer" card instead
 };
 
 const demo = (slug: string, extra: string[] = []) => [
@@ -44,6 +45,7 @@ export const library: LibraryEntry[] = [
     reference: "Deji Ajetomobi · Cursor Icon Trail",
     tags: ["React", "CSS transitions"],
     files: ["components/site/icon-trail.tsx"],
+    desktopOnly: true,
   },
   {
     slug: "physics-tags",
@@ -62,6 +64,7 @@ export const library: LibraryEntry[] = [
     reference: "Balky Studio · Hover Image Reveals",
     tags: ["React", "GSAP"],
     files: ["components/site/work-rows.tsx"],
+    desktopOnly: true,
   },
   {
     slug: "text-reveal",
@@ -177,6 +180,7 @@ export const library: LibraryEntry[] = [
     reference: "dqnamo · Magnetic Drop Zone",
     tags: ["React", "Framer Motion"],
     files: demo("magnetic-drop-zone"),
+    desktopOnly: true,
   },
   {
     slug: "scroll-fade-list",

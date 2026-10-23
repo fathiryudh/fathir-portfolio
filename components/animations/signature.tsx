@@ -25,6 +25,31 @@ type SignatureProps = {
   ariaLabel?: string;
 };
 
+// Shared by the dev signature pad and the library demo, so a saved signature replays like the demo.
+type Point = { x: number; y: number };
+
+export const round = (value: number) => Math.round(value * 10) / 10;
+
+// Quadratic curves through each sample's midpoints: smooth, and still passes near every point.
+export function toPathData(points: Point[]) {
+  const [first] = points;
+  if (points.length === 1) return `M${round(first.x)} ${round(first.y)} L${round(first.x + 0.1)} ${round(first.y)}`;
+  let d = `M${round(first.x)} ${round(first.y)}`;
+  for (let i = 1; i < points.length - 1; i++) {
+    const midX = (points[i].x + points[i + 1].x) / 2;
+    const midY = (points[i].y + points[i + 1].y) / 2;
+    d += ` Q${round(points[i].x)} ${round(points[i].y)} ${round(midX)} ${round(midY)}`;
+  }
+  const last = points[points.length - 1];
+  return `${d} L${round(last.x)} ${round(last.y)}`;
+}
+
+export function strokeLength(points: Point[]) {
+  let length = 0;
+  for (let i = 1; i < points.length; i++) length += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
+  return Math.max(length, 1);
+}
+
 function toCssTime(value: number | string) {
   return typeof value === "number" ? `${value}s` : value;
 }

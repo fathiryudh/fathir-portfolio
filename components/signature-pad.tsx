@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
-import Signature, { type SignatureData } from "@/components/animations/signature";
+import Signature, { round, strokeLength, toPathData, type SignatureData } from "@/components/animations/signature";
 
 type Point = { x: number; y: number };
 
@@ -10,35 +10,6 @@ const PAD_WIDTH = 900;
 const PAD_HEIGHT = 420;
 const STROKE_WIDTH = 14;
 const MIN_POINT_DISTANCE = 2;
-
-function round(value: number) {
-  return Math.round(value * 10) / 10;
-}
-
-// Smooths raw pointer samples into quadratic curves through each point's midpoints.
-function toPathData(points: Point[]) {
-  const [first] = points;
-  if (points.length === 1) {
-    return `M${round(first.x)} ${round(first.y)} L${round(first.x + 0.1)} ${round(first.y)}`;
-  }
-
-  let d = `M${round(first.x)} ${round(first.y)}`;
-  for (let i = 1; i < points.length - 1; i++) {
-    const midX = (points[i].x + points[i + 1].x) / 2;
-    const midY = (points[i].y + points[i + 1].y) / 2;
-    d += ` Q${round(points[i].x)} ${round(points[i].y)} ${round(midX)} ${round(midY)}`;
-  }
-  const last = points[points.length - 1];
-  return `${d} L${round(last.x)} ${round(last.y)}`;
-}
-
-function strokeLength(points: Point[]) {
-  let length = 0;
-  for (let i = 1; i < points.length; i++) {
-    length += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
-  }
-  return Math.max(length, 1);
-}
 
 function toSignatureData(strokes: Point[][]): SignatureData {
   const all = strokes.flat();

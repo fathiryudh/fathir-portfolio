@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useVeil } from "@/components/site/veil";
+import { setTheme } from "@/components/site/site-header";
 import { EMAIL, projects, socials } from "@/lib/site-content";
 
 // ⌘K command menu after Carter Ogunsola's (Design References/carterogunsola.com/Small UI Atoms):
@@ -24,13 +25,7 @@ export default function CommandMenu({ open, onClose }: { open: boolean; onClose:
       if (!go(href)) router.push(href);
     };
     const external = (href: string) => () => window.open(href, "_blank", "noopener,noreferrer");
-    const toggleTheme = () => {
-      const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-      document.documentElement.dataset.theme = next;
-      try {
-        localStorage.setItem("theme", next);
-      } catch {}
-    };
+    const toggleTheme = () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
     return [
       { group: "Pages", label: "Home", hint: "/", run: visit("/") },
       { group: "Pages", label: "Work", hint: "/work", run: visit("/work") },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type ComponentType, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import { TransitionLink } from "@/components/site/veil";
 import { MaskText, Reveal } from "@/components/site/reveal";
@@ -15,13 +15,6 @@ const PhysicsTags = dynamic(() => import("@/components/site/physics-tags"));
 const WorkRows = dynamic(() => import("@/components/site/work-rows"));
 const CommandMenu = dynamic(() => import("@/components/site/command-menu"));
 const Letter = dynamic(() => import("@/components/contact/letter"));
-
-// New entries: one self-contained file per component under ./demos, default export = the demo.
-const lazy = (load: () => Promise<{ default: React.ComponentType }>) => {
-  const Demo = dynamic(load);
-  const LazyDemo = () => <Demo />;
-  return LazyDemo;
-};
 
 function Hint({ children }: { children: ReactNode }) {
   return <p className="lib-demo__hint label muted">{children}</p>;
@@ -52,18 +45,19 @@ function CommandMenuDemo() {
   );
 }
 
-export const demos: Record<string, () => ReactNode> = {
-  "receipt-printer": lazy(() => import("./demos/receipt-printer")),
-  "hold-to-confirm": lazy(() => import("./demos/hold-to-confirm")),
-  "tactile-button": lazy(() => import("./demos/tactile-button")),
-  "dynamic-button": lazy(() => import("./demos/dynamic-button")),
-  "scramble-text": lazy(() => import("./demos/scramble-text")),
-  "logo-trace-loader": lazy(() => import("./demos/logo-trace-loader")),
-  "magnetic-drop-zone": lazy(() => import("./demos/magnetic-drop-zone")),
-  "scroll-fade-list": lazy(() => import("./demos/scroll-fade-list")),
-  "ticket": lazy(() => import("./demos/ticket")),
-  "stamp": lazy(() => import("./demos/stamp")),
-  "iridescent-foil": lazy(() => import("./demos/iridescent-foil")),
+// New entries: one self-contained file per component under ./demos, default export = the demo.
+export const demos: Record<string, ComponentType> = {
+  "receipt-printer": dynamic(() => import("./demos/receipt-printer")),
+  "hold-to-confirm": dynamic(() => import("./demos/hold-to-confirm")),
+  "tactile-button": dynamic(() => import("./demos/tactile-button")),
+  "dynamic-button": dynamic(() => import("./demos/dynamic-button")),
+  "scramble-text": dynamic(() => import("./demos/scramble-text")),
+  "logo-trace-loader": dynamic(() => import("./demos/logo-trace-loader")),
+  "magnetic-drop-zone": dynamic(() => import("./demos/magnetic-drop-zone")),
+  "scroll-fade-list": dynamic(() => import("./demos/scroll-fade-list")),
+  "ticket": dynamic(() => import("./demos/ticket")),
+  "stamp": dynamic(() => import("./demos/stamp")),
+  "iridescent-foil": dynamic(() => import("./demos/iridescent-foil")),
   dial: () => (
     <div className="lib-demo lib-demo--center">
       <p className="lib-demo__big">You’re spinning it.</p>
@@ -108,7 +102,7 @@ export const demos: Record<string, () => ReactNode> = {
       </Replay>
     </div>
   ),
-  signature: lazy(() => import("./demos/signature-draw")),
+  signature: dynamic(() => import("./demos/signature-draw")),
   "live-readouts": () => (
     <div className="lib-demo lib-demo--center lib-demo--readouts">
       <p className="lib-demo__big">

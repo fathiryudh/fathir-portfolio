@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Dial, { type DialControl } from "@/components/library/dial";
 import { demos } from "@/components/library/demos";
 import type { LibraryEntry } from "@/lib/library";
@@ -10,6 +10,24 @@ import type { LibraryEntry } from "@/lib/library";
 // an item for a moment, so spinning past heavy previews doesn't build and tear each one down.
 
 const MOUNT_DELAY = 180;
+
+// Desktop-only demos lean on hover or a mouse; without one they'd sit there doing nothing.
+const DESKTOP_MEDIA = "(hover: hover) and (pointer: fine)";
+
+function subscribeDesktop(listener: () => void) {
+  const media = window.matchMedia(DESKTOP_MEDIA);
+  media.addEventListener("change", listener);
+  return () => media.removeEventListener("change", listener);
+}
+
+function NeedsDesktop() {
+  return (
+    <div className="lib-demo lib-demo--center">
+      <p className="lib-demo__big">Open this one on a computer.</p>
+      <p className="lib-demo__hint label muted">It needs a mouse and hover, so it won’t work on a phone</p>
+    </div>
+  );
+}
 
 type SourceFile = { path: string; code: string; html: string };
 
@@ -99,6 +117,11 @@ export default function Library({ entries }: { entries: LibraryEntry[] }) {
   const [tab, setTab] = useState<"preview" | "code">("preview");
   const timer = useRef(0);
   const dial = useRef<DialControl | null>(null);
+  const desktop = useSyncExternalStore(
+    subscribeDesktop,
+    () => window.matchMedia(DESKTOP_MEDIA).matches,
+    () => true,
+  );
 
   // A shared link (#slug) spins the dial to that component after load.
   useEffect(() => {
@@ -161,7 +184,7 @@ export default function Library({ entries }: { entries: LibraryEntry[] }) {
         <div className={`library__stage${mounted !== active ? " is-switching" : ""}`}>
           {tab === "preview" ? (
             <div key={shown.slug} className="library__demo">
-              {Demo ? <Demo /> : null}
+              {shown.desktopOnly && !desktop ? <NeedsDesktop /> : Demo ? <Demo /> : null}
             </div>
           ) : (
             <Code key={shown.slug} slug={shown.slug} />

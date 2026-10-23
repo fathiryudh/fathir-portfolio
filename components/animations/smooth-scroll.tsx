@@ -7,13 +7,15 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let instance: { destroy: () => void } | undefined;
+    let dead = false; // cleanup can run before the import resolves (Strict Mode remounts)
 
     (async () => {
       const LocomotiveScroll = (await import("locomotive-scroll")).default;
-      instance = new LocomotiveScroll();
+      if (!dead) instance = new LocomotiveScroll();
     })();
 
     return () => {
+      dead = true;
       instance?.destroy();
     };
   }, []);

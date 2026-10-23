@@ -27,6 +27,7 @@ function pageName(pathname: string) {
   }
   if (pathname.startsWith("/work")) return "Work";
   if (pathname.startsWith("/about")) return "About";
+  if (pathname.startsWith("/library")) return "Library";
   return "Fathir";
 }
 

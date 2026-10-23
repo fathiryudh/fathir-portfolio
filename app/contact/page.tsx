@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import TextDisperse from "@/components/animations/text-disperse";
 import Letter from "@/components/contact/letter";
+import { EMAIL, socials } from "@/lib/site-content";
+
+const social = (label: string) => socials.find((item) => item.label === label)!.href;
 
 export default function ContactPage() {
   // The scroll cue steps aside once the visitor has started scrolling toward the letter.
@@ -41,19 +44,19 @@ export default function ContactPage() {
             <p>Singapore</p>
           </div>
           <div className="contact-hero__row">
-            <Link href="https://linkedin.com/in/fathiryudhistira" target="_blank" rel="noreferrer">
+            <Link href={social("LinkedIn")} target="_blank" rel="noreferrer">
               <TextDisperse>
                 <p>{"→LinkedIn"}</p>
               </TextDisperse>
             </Link>
-            <Link href="https://github.com/fathiryudh" target="_blank" rel="noreferrer">
+            <Link href={social("GitHub")} target="_blank" rel="noreferrer">
               <TextDisperse>
                 <p>{"→Github"}</p>
               </TextDisperse>
             </Link>
           </div>
           <div className="contact-hero__row">
-            <a href="mailto:fathiryudh03@gmail.com">
+            <a href={`mailto:${EMAIL}`}>
               <TextDisperse>
                 <p>{"→Email"}</p>
               </TextDisperse>

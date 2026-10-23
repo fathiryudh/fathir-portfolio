@@ -23,6 +23,10 @@ export default function PhysicsTags({ items }: { items: { label: string; group: 
 
     const pills = [...list.children] as HTMLElement[];
     let teardown = () => {};
+    // The pile is frozen while scrolled away, so it costs nothing off-screen.
+    let onScreen = true;
+    const view = new IntersectionObserver(([entry]) => (onScreen = entry.isIntersecting));
+    view.observe(box);
 
     const build = () => {
       teardown();
@@ -66,15 +70,17 @@ export default function PhysicsTags({ items }: { items: { label: string; group: 
       let raf = 0;
       let last = performance.now();
       const step = (now: number) => {
-        Matter.Engine.update(engine, Math.min(now - last, 32));
+        const dt = Math.min(now - last, 32);
         last = now;
+        raf = requestAnimationFrame(step);
+        if (!onScreen) return;
+        Matter.Engine.update(engine, dt);
         bodies.forEach((body, index) => {
           const pill = pills[index];
           pill.style.transform = `translate(${body.position.x - pill.offsetWidth / 2}px, ${
             body.position.y - pill.offsetHeight / 2
           }px) rotate(${body.angle}rad)`;
         });
-        raf = requestAnimationFrame(step);
       };
       raf = requestAnimationFrame(step);
 
@@ -111,6 +117,7 @@ export default function PhysicsTags({ items }: { items: { label: string; group: 
 
     return () => {
       observer.disconnect();
+      view.disconnect();
       cancelVeil();
       clearTimeout(resizeTimer);
       window.removeEventListener("resize", onResize);
