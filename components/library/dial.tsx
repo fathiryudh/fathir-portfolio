@@ -24,26 +24,6 @@ const FADE_TO = 64;
 export type DialItem = { id: string; label: string };
 export type DialControl = { settleTo: (index: number) => void };
 
-// A detent click you can feel on phones. Android: the Vibration API. iOS Safari has no Vibration
-// API, but iOS 18+ plays its native haptic tick when a switch-style checkbox is toggled, so a hidden
-// one is toggled instead (older iOS: nothing happens). Both only fire inside an input event handler,
-// never from an animation frame, so detents are counted off the pointer, not the rendered dial.
-function createHaptics() {
-  if (!window.matchMedia("(pointer: coarse)").matches) return () => {};
-  if ("vibrate" in navigator) return () => navigator.vibrate(8);
-  const label = document.createElement("label");
-  const input = document.createElement("input");
-  input.type = "checkbox";
-  input.setAttribute("switch", "");
-  label.append(input);
-  label.setAttribute("aria-hidden", "true");
-  label.style.cssText = "position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden";
-  document.body.append(label);
-  const tick = () => label.click();
-  tick.dispose = () => label.remove();
-  return tick;
-}
-
 const DEG = Math.PI / 180;
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 const mod = (value: number, n: number) => ((value % n) + n) % n;
@@ -84,7 +64,6 @@ export default function Dial({
     const els = itemRefs.current.slice(0, items.length) as HTMLButtonElement[];
     const count = items.length;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const haptic = createHaptics() as (() => void) & { dispose?: () => void };
 
     let cx = 0;
     let cy = 0;
@@ -99,15 +78,6 @@ export default function Dial({
     let pressTarget = 0;
     let snap: gsap.core.Tween | null = null;
     let wheelIdle = 0;
-    let felt = Math.round(target); // last detent the hand was buzzed for
-
-    // Call from input handlers only: buzz when the hand drives target across a detent.
-    const feel = () => {
-      const detent = Math.round(target);
-      if (detent === felt) return;
-      felt = detent;
-      haptic();
-    };
 
     const measure = () => {
       const width = root.clientWidth;
@@ -197,7 +167,7 @@ export default function Dial({
       if (reduced) {
         target = to;
         dirty = true;
-        return to;
+        return;
       }
       const from = target;
       const progress = { p: 0 };
@@ -212,15 +182,8 @@ export default function Dial({
           snap = null;
         },
       });
-      return to;
     };
-    // An item tap is one detent jump however far it travels, so it gets one buzz.
-    const tapTo = (to: number) => {
-      const dest = settleTo(to);
-      if (dest !== felt) haptic();
-      felt = dest;
-    };
-    apiRef.current = { settleTo: tapTo, moved: () => moved };
+    apiRef.current = { settleTo, moved: () => moved };
     if (controlRef) controlRef.current = { settleTo };
 
     const controller = new AbortController();
@@ -234,7 +197,6 @@ export default function Dial({
         snap = null;
         dragging = true;
         moved = false;
-        felt = Math.round(target);
         pressY = event.clientY;
         pressTarget = target;
         root.classList.add("is-dragging");
@@ -249,7 +211,6 @@ export default function Dial({
         if (!moved && Math.abs(dy) > 4) moved = true;
         target = pressTarget - dy / STEP_PX;
         dirty = true;
-        feel();
       },
       { signal },
     );
@@ -270,7 +231,6 @@ export default function Dial({
         snap = null;
         target += event.deltaY / (STEP_PX * 3);
         dirty = true;
-        feel();
         clearTimeout(wheelIdle);
         wheelIdle = window.setTimeout(() => settleTo(target, true), 150);
       },
@@ -323,7 +283,6 @@ export default function Dial({
       clearTimeout(wheelIdle);
       apiRef.current = null;
       if (controlRef) controlRef.current = null;
-      haptic.dispose?.();
     };
     // The dial owns its position after mount; `initial` only seeds it.
     // eslint-disable-next-line react-hooks/exhaustive-deps
