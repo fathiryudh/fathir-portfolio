@@ -1,0 +1,88 @@
+.stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.25rem;
+}
+
+.svg {
+  overflow: visible;
+  color: #0090ff;
+  transition: color 0.2s;
+}
+
+.svg[data-filled="true"] {
+  color: var(--c-ink);
+}
+
+.comet {
+  animation: comet linear infinite;
+}
+
+@keyframes comet {
+  to {
+    stroke-dashoffset: -1;
+  }
+}
+
+.mark {
+  transition:
+    scale 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+    translate 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.mark[data-done="true"] {
+  scale: 0.8;
+  translate: 0 -12px;
+}
+
+.panel {
+  display: grid;
+  justify-items: center;
+  gap: 0.25rem;
+  opacity: 0;
+  translate: 0 12px;
+  transition:
+    opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.1s,
+    translate 0.6s cubic-bezier(0.23, 1, 0.32, 1) 0.1s;
+}
+
+.panel[data-done="true"] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.sub {
+  font-size: 0.85rem;
+  color: var(--c-muted);
+}
+
+.again {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  translate: -50% 0;
+  padding: 0.45em 1em;
+  border: 1px solid var(--c-rule);
+  border-radius: 999px;
+  background: none;
+  color: var(--c-ink);
+  font: 500 0.7rem var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comet {
+    animation: none;
+  }
+}

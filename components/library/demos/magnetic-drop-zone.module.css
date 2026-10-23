@@ -1,0 +1,121 @@
+.stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.zone {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  width: min(24rem, 100%);
+  min-height: 16rem;
+  overflow: hidden;
+  border: 1px dashed var(--c-rule);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--c-paper) 70%, transparent);
+  transition:
+    border-color 0.2s cubic-bezier(0.23, 1, 0.32, 1),
+    background 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.zone[data-near="near"] {
+  border-color: #5eb1ef;
+  background: rgb(0 144 255 / 8%);
+}
+
+.zone[data-near="over"] {
+  border-color: #0090ff;
+  background: rgb(0 144 255 / 14%);
+}
+
+.glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 10rem;
+  height: 10rem;
+  margin: -5rem 0 0 -5rem;
+  border-radius: 50%;
+  background: rgb(0 144 255 / 30%);
+  filter: blur(40px);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.zone:not([data-near="idle"]) .glow {
+  opacity: 1;
+}
+
+.empty,
+.file {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 2rem 1.5rem;
+  border: 0;
+  background: none;
+  color: var(--c-ink);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.file {
+  cursor: default;
+}
+
+.tile {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: 0.25rem;
+  border-radius: 0.75rem;
+  background: rgb(0 144 255 / 14%);
+  color: #0090ff;
+  font-size: 1.25rem;
+}
+
+.name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.size {
+  font: 500 0.625rem var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+.row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.small {
+  padding: 0.35em 0.8em;
+  border: 1px solid var(--c-rule);
+  border-radius: 0.5rem;
+  background: var(--c-paper);
+  color: var(--c-ink);
+  font: 500 0.75rem var(--font-sans);
+  cursor: pointer;
+}
+
+.hint {
+  position: absolute;
+  bottom: 1rem;
+  font: 500 0.68rem var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
