@@ -17,6 +17,7 @@
   aspect-ratio: var(--pad-ratio);
   display: grid;
   place-items: center;
+  touch-action: none;
 }
 
 .surface {

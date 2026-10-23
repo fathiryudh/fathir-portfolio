@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import gsap from "gsap";
+import { EMAIL } from "@/lib/site-content";
 import "./letter.css";
 
 // A contact form dressed as a letter on a desk: a ruled sheet you write on, a
 // signature you draw in a pop-up pad, and a receipt stub that fills in once the
 // letter is posted. Sending hands the letter to the visitor's mail app.
 
-const EMAIL = "fathiryudh03@gmail.com";
 const KINDS = ["A project", "A role", "Just saying hi"] as const;
 const LINE = 30; // px between ruled lines; the textarea line-height matches
 const INK = "#1b2440";
