@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { MaskText, Reveal } from "@/components/site/reveal";
 import WorkRows from "@/components/site/work-rows";
-import { projects } from "@/lib/site-content";
+import { pageMetadata, projects } from "@/lib/site-content";
 
-export const metadata: Metadata = {
-  title: "Work | Muhammad Fathir Yudhistira",
-  description: "Websites, bots, products, mini projects and automation by Fathir Yudhistira.",
-};
+export const metadata: Metadata = pageMetadata("/work", "Work | Muhammad Fathir Yudhistira", "Websites, bots, products, mini projects and automation by Fathir Yudhistira.");
 
 export default function WorkPage() {
   return (

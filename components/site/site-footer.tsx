@@ -20,7 +20,7 @@ export default function SiteFooter() {
             <ul>
               {socials.map((social) => (
                 <li key={social.label}>
-                  <a className="u-link u-link--alt" href={social.href} target="_blank" rel="noreferrer">
+                  <a className="u-link u-link--alt" href={social.href} target="_blank" rel="noopener noreferrer">
                     {social.label}
                   </a>
                 </li>

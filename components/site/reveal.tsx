@@ -59,10 +59,10 @@ export function MaskText({ as: Tag = "p", text, className = "", delay = 0 }: Mas
   const ref = useReveal<HTMLElement>();
   const words = text.split(" ");
   return (
-    <Tag ref={ref} className={`mask ${className}`} aria-label={text}>
+    <Tag ref={ref} className={`mask ${className}`}>
       {words.map((word, index) => (
         <Fragment key={index}>
-          <span className="mask__w" aria-hidden="true">
+          <span className="mask__w">
             <span className="mask__i" style={{ "--i": index + delay } as CSSProperties}>
               {word}
             </span>

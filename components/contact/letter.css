@@ -227,6 +227,8 @@
 
 .letter__field:focus-within .letter__rule,
 .letter__sig:focus-visible .letter__rule {
+  /* Thicker as well as darker, so keyboard focus reads at a glance. */
+  block-size: 2px;
   background: var(--pen);
 }
 

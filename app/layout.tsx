@@ -42,14 +42,14 @@ const marker = Permanent_Marker({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fathiryudh.com"),
-  title: "Muhammad Fathir Yudhistira | Software Builder",
+  title: "Muhammad Fathir Yudhistira | Software engineering student",
   description:
-    "Fathir Yudhistira builds useful software for the web and mobile. Software engineering student at SIT in Singapore.",
+    "Fathir Yudhistira makes useful software for the web and mobile. Software engineering student at SIT, based in Singapore.",
   keywords: ["Muhammad Fathir Yudhistira", "software engineer", "portfolio", "Singapore", "Next.js", "React", "Telegram bots", "web developer"],
   authors: [{ name: "Muhammad Fathir Yudhistira" }],
   openGraph: {
-    title: "Muhammad Fathir Yudhistira | Software Builder",
-    description: "Useful software for the web and mobile, by Fathir Yudhistira.",
+    title: "Muhammad Fathir Yudhistira | Software engineering student",
+    description: "Useful software for the web and mobile, made by Fathir Yudhistira in Singapore.",
     url: "https://fathiryudh.com",
     siteName: "Fathir Yudhistira Portfolio",
     locale: "en_SG",
@@ -58,8 +58,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     creator: "@fathiryudh",
-    title: "Muhammad Fathir Yudhistira | Software Builder",
-    description: "Useful software for the web and mobile, by Fathir Yudhistira.",
+    title: "Muhammad Fathir Yudhistira | Software engineering student",
+    description: "Useful software for the web and mobile, made by Fathir Yudhistira in Singapore.",
   },
 };
 

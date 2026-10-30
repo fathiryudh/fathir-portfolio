@@ -222,3 +222,14 @@ export const socials = [
 
 export const EMAIL = "fathiryudh03@gmail.com";
 export const FULL_NAME = "Muhammad Fathir Yudhistira";
+
+// Child pages replace the root openGraph/twitter objects wholesale, so each page restates them with its own title and URL.
+export function pageMetadata(path: string, title: string, description: string) {
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: { title, description, url: path, images: "/opengraph-image", siteName: "Fathir Yudhistira Portfolio", locale: "en_SG", type: "website" as const },
+    twitter: { card: "summary_large_image" as const, creator: "@fathiryudh", title, description, images: "/opengraph-image" },
+  };
+}

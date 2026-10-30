@@ -3,7 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { TransitionLink } from "@/components/site/veil";
 import { MaskText, Reveal } from "@/components/site/reveal";
-import { projects } from "@/lib/site-content";
+import { pageMetadata, projects } from "@/lib/site-content";
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
@@ -13,7 +13,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const project = projects.find((item) => item.slug === slug);
   if (!project) return {};
-  return { title: `${project.title} | Muhammad Fathir Yudhistira`, description: project.summary };
+  // Search snippets cut off around 160 characters; the first sentence of each long summary fits.
+  const description = project.summary.length > 160 ? project.summary.split(/(?<=\.) /)[0] : project.summary;
+  return pageMetadata(`/work/${slug}`, `${project.title} | Muhammad Fathir Yudhistira`, description);
 }
 
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -56,12 +58,12 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             <p className="label muted">Links</p>
             <p className="case-meta__links">
               {project.href ? (
-                <a className="u-link" href={project.href} target="_blank" rel="noreferrer">
+                <a className="u-link" href={project.href} target="_blank" rel="noopener noreferrer">
                   Live site
                 </a>
               ) : null}
               {project.repoHref ? (
-                <a className="u-link" href={project.repoHref} target="_blank" rel="noreferrer">
+                <a className="u-link" href={project.repoHref} target="_blank" rel="noopener noreferrer">
                   Repository
                 </a>
               ) : null}

@@ -35,6 +35,12 @@
   letter-spacing: -0.01em;
 }
 
+/* Just the header and skip link on a page that keeps its own design (/contact). */
+.site--chrome {
+  min-height: 0;
+  background: none;
+}
+
 .site *,
 .site *::before,
 .site *::after {
@@ -149,6 +155,10 @@
   justify-content: space-between;
   gap: 1rem;
   padding-bottom: 1rem;
+}
+
+.site .section__head .u-link {
+  padding-block: 5px; /* 24px tap target around the 14px label */
 }
 
 /* ---------- Underline links (Balky's [underline-link], pure CSS) ---------- */
@@ -548,6 +558,11 @@
 
 .themetoggle button[aria-pressed="false"] {
   opacity: 0.5;
+  transition: opacity 0.2s var(--ease-quart);
+}
+
+.themetoggle button[aria-pressed="false"]:hover {
+  opacity: 1;
 }
 
 .themetoggle svg {
@@ -1170,7 +1185,7 @@ html[data-theme="dark"] .hero__wordmark--white {
 }
 
 [data-group="infra"] {
-  --group: #e3364a;
+  --group: #d93246; /* 4.7:1 with white text */
   --group-ink: #fff;
 }
 
@@ -1309,6 +1324,13 @@ html[data-theme="dark"] .hero__wordmark--white {
   gap: 0.25rem 0.9rem;
 }
 
+/* 24px minimum tap target (WCAG 2.5.8). */
+.site-footer__socials a {
+  min-width: 24px;
+  padding-block: 2px;
+  text-align: center;
+}
+
 .site-footer__time {
   grid-column: 7 / 11;
   display: flex;
@@ -1442,7 +1464,8 @@ html[data-theme="dark"] .hero__wordmark--white {
   letter-spacing: -0.03em;
 }
 
-.dial__item.is-active {
+.dial__item.is-active,
+.dial__item:hover {
   color: var(--c-ink);
 }
 
@@ -1829,6 +1852,11 @@ html[data-theme="dark"] .lib-code__body .shiki span {
     --header-h: 76px;
   }
 
+  /* A full-screen poster left the top two thirds of the phone empty. */
+  .hero {
+    min-height: 70svh;
+  }
+
   .library {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: 44svh auto;
@@ -1959,4 +1987,13 @@ html[data-theme="dark"] .lib-code__body .shiki span {
     grid-column: 1 / -1;
     justify-self: start;
   }
+}
+
+/* ---------- 404 ---------- */
+
+.not-found__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-top: 1.25rem;
 }

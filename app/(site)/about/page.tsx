@@ -2,12 +2,9 @@ import type { Metadata } from "next";
 import { MaskText, Reveal } from "@/components/site/reveal";
 import PhysicsTags from "@/components/site/physics-tags";
 import { TransitionLink } from "@/components/site/veil";
-import { education, experience, sideNotes, skillGroups, skills, type TimelineItem } from "@/lib/site-content";
+import { education, pageMetadata, experience, sideNotes, skillGroups, skills, type TimelineItem } from "@/lib/site-content";
 
-export const metadata: Metadata = {
-  title: "About | Muhammad Fathir Yudhistira",
-  description: "Software engineering student at SIT in Singapore, building web and mobile software.",
-};
+export const metadata: Metadata = pageMetadata("/about", "About | Muhammad Fathir Yudhistira", "Software engineering student at SIT in Singapore, building web and mobile software.");
 
 function Timeline({ title, items }: { title: string; items: TimelineItem[] }) {
   return (

@@ -3,11 +3,28 @@ import { TransitionLink } from "@/components/site/veil";
 import { MaskText, Reveal } from "@/components/site/reveal";
 import WorkRows from "@/components/site/work-rows";
 import IconTrail from "@/components/site/icon-trail";
-import { projects } from "@/lib/site-content";
+import type { Metadata } from "next";
+import { FULL_NAME, projects, socials } from "@/lib/site-content";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
+// Tells Google who the site is about, so name searches can link the profiles below.
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: FULL_NAME,
+  alternateName: "Fathir Yudhistira",
+  url: "https://fathiryudh.com",
+  jobTitle: "Software engineering student",
+  affiliation: { "@type": "CollegeOrUniversity", name: "Singapore Institute of Technology" },
+  address: { "@type": "PostalAddress", addressCountry: "SG" },
+  sameAs: socials.map((item) => item.href),
+};
 
 export default function Home() {
   return (
     <div data-page className="page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }} />
       <IconTrail className="hero-trail">
         <section className="hero grid">
           <Reveal className="hero__meta label">

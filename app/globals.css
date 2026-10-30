@@ -8,7 +8,7 @@
   color-scheme: light;
   --c-paper: #f1f0ec;
   --c-ink: #161614;
-  --c-muted: rgb(22 22 20 / 52%);
+  --c-muted: rgb(22 22 20 / 62%); /* 4.8:1 on paper; 52% failed AA */
   --c-rule: rgb(22 22 20 / 16%);
   --c-accent: #ff4d00;
   --c-on-accent: #161614;
@@ -213,6 +213,16 @@ textarea:focus-visible {
   outline-offset: 3px;
 }
 
+/* Text for screen readers only. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 ::selection {
   background: var(--c-accent);
   color: var(--c-on-accent);
@@ -284,39 +294,13 @@ textarea:focus-visible {
   color: var(--c-ink);
 }
 
-.contact-nav {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  z-index: 70;
-}
-
-.contact-nav__back {
-  display: grid;
-  place-items: center;
-  width: 2.8rem;
-  height: 2.8rem;
-  background: var(--c-ink);
-  color: var(--c-paper);
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  rotate: -6deg;
-  transition: rotate 200ms ease, background-color 200ms ease;
-}
-
-.contact-nav__back:hover {
-  rotate: 4deg;
-  background: var(--c-accent);
-  color: var(--c-on-accent);
-}
-
 .contact-hero-wrapper {
   position: relative;
   display: flex;
   min-height: 100svh;
   align-items: center;
   justify-content: center;
-  padding-top: 5rem;
+  padding-top: 8rem; /* clears the fixed site header */
   padding-bottom: 9rem;
 }
 
@@ -336,7 +320,8 @@ textarea:focus-visible {
 }
 
 .contact-hero__row:nth-child(2) p {
-  color: var(--c-accent);
+  /* Pure accent is 2.9:1 on paper; nudged toward ink to clear 3:1 for large text in both themes. */
+  color: color-mix(in srgb, var(--c-accent) 88%, var(--c-ink));
 }
 
 .contact-hero__row:nth-child(3) p:last-child {
@@ -460,7 +445,7 @@ textarea:focus-visible {
   }
 
   .contact-hero-wrapper {
-    padding-top: 3rem;
+    padding-top: 6rem; /* clears the fixed site header */
   }
 
   .scroll-cue {
