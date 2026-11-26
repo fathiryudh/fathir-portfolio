@@ -4,33 +4,72 @@
    styles below. Re-theme the whole site from the --c-* tokens.
    ============================================================ */
 
+/* "Acid garage": night asphalt, racing red, cobalt, acid lime, and a thermal heat ramp.
+   Light theme is the topo desk mat. */
 :root {
   color-scheme: light;
-  --c-paper: #f1f0ec;
-  --c-ink: #161614;
-  --c-muted: rgb(22 22 20 / 62%); /* 4.8:1 on paper; 52% failed AA */
-  --c-rule: rgb(22 22 20 / 16%);
-  --c-accent: #ff4d00;
-  --c-on-accent: #161614;
-  --c-badge-a: #ff4d00;
-  --c-badge-b: #2f6bff;
-  --c-badge-c: #1fae63;
-  --c-badge-d: #f2c230;
-  --c-badge-e: #e5508f;
+  --c-paper: #e9e8e2;
+  --c-ink: #0d0d0f;
+  --c-muted: rgb(13 13 15 / 64%);
+  --c-rule: rgb(13 13 15 / 16%);
+  --c-accent: #e3200b; /* racing red */
+  --c-on-accent: #fff;
+  --c-cobalt: #1d4dff;
+  --c-acid: #c9f31d;
+  --c-sticker: #fff; /* sticker backing, both themes */
+  --c-badge-a: #ff2d14;
+  --c-badge-b: #1d4dff;
+  --c-badge-c: #c9f31d;
+  --c-badge-d: #ff8a00;
+  --c-badge-e: #19d3f0;
+  /* Thermal camera ramp (cold → hot): the signature graphic. */
+  --heat: linear-gradient(90deg, #1d2cff, #00b7ff 18%, #2cff8f 36%, #f6ff2e 54%, #ff9a00 72%, #ff2d14 88%, #ff2dc8);
+  --grain-opacity: 0.06;
+  --topo-opacity: 0.45;
   /* The page-transition sheet. */
-  --veil-paper: #e7e5df;
+  --veil-paper: #dcdad3;
 }
 
-/* Dark theme: set by the header toggle (persisted) or the OS preference, before paint. */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --c-paper: #141413;
-  --c-ink: #ecebe6;
-  --c-muted: rgb(236 235 230 / 55%);
-  --c-rule: rgb(236 235 230 / 14%);
-  --c-accent: #ff5a1f;
-  --c-on-accent: #141413;
-  --veil-paper: #1f1f1d;
+  --c-paper: #0b0b0c;
+  --c-ink: #f1f0ea;
+  --c-muted: rgb(241 240 234 / 58%);
+  --c-rule: rgb(241 240 234 / 13%);
+  --c-accent: #ff3b1f;
+  --c-on-accent: #0b0b0c;
+  --grain-opacity: 0.07;
+  --topo-opacity: 0.45;
+  --veil-paper: #131315;
+}
+
+/* Film grain over everything (the halftone/Batman-still texture). Kept cheap: no blend mode (that forced
+   the whole page to re-blend every frame) and only a small overscan, moved with transform. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -6%;
+  z-index: 950;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  will-change: transform;
+  animation: grain 0.9s steps(4) infinite;
+}
+
+/* Lite mode (components/site/lite.ts): no grain on weak devices. */
+html[data-lite] body::after {
+  display: none;
+}
+
+@keyframes grain {
+  25% { translate: -3% 2%; }
+  50% { translate: 2% -4%; }
+  75% { translate: -1% 3%; }
+}
+
+@keyframes heat-drift {
+  to { background-position: 100% 0; }
 }
 
 /* ---------- Page-transition sheet + first-visit loader (components/site/veil.tsx) ---------- */
@@ -48,25 +87,26 @@
   position: fixed;
   inset: 0;
   z-index: 900;
-  background: var(--veil-paper);
+  overflow: hidden;
   visibility: hidden;
   pointer-events: none;
 }
 
-.veil.is-gl {
-  background: transparent;
-}
-
-.veil__paper {
+/* Fire wall: a solid panel with a strip of ASCII fire burning on its top edge. At rest it covers the
+   screen (so the pre-JS boot state is covered); JS parks it below the screen between transitions. */
+.veil__wall {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
+  background: var(--veil-paper);
+  will-change: transform;
 }
 
-.veil.is-gl .veil__paper {
-  display: block;
+.veil__wall-fire {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% - 4px); /* overlap the panel so no seam shows under the flames */
+  width: 100%;
+  height: 60vh;
 }
 
 /* Covering on load before JS runs; a failsafe fades it out if JS never takes over. */
@@ -77,7 +117,8 @@ html[data-veil="fast"] .veil {
   animation: veil-failsafe 0.5s ease 4s forwards;
 }
 
-.veil.is-js {
+/* Must outrank the boot/fast selector above, or the failsafe still fires under a running loader. */
+html[data-veil] .veil.is-js {
   animation: none;
 }
 
@@ -100,10 +141,24 @@ html[data-veil="revealing"] .veil__boot {
   display: block;
 }
 
+/* The bands don't clip the counter, so it fades as the panel starts to leave. */
+html[data-veil="revealing"] .veil__boot {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.veil__flame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .veil__word {
   position: absolute;
+  z-index: 1;
   left: clamp(16px, 2.2vw, 32px);
-  bottom: clamp(16px, 2.2vw, 32px);
+  top: clamp(16px, 2.2vw, 32px); /* the fire owns the bottom of the screen */
   display: grid;
   gap: 2px;
   font-family: var(--font-mono);
@@ -114,36 +169,6 @@ html[data-veil="revealing"] .veil__boot {
 
 .veil__word span:last-child {
   color: var(--c-muted);
-}
-
-.veil__travel {
-  position: absolute;
-  right: clamp(16px, 2.2vw, 32px);
-  bottom: clamp(16px, 2.2vw, 32px);
-  will-change: transform;
-}
-
-.veil__count {
-  display: block;
-  height: 1em;
-  overflow: hidden;
-  font-family: var(--font-geist-sans), Arial, sans-serif;
-  font-size: clamp(4rem, 2rem + 8vw, 10rem);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.05em;
-  line-height: 1;
-  text-align: right;
-}
-
-.veil__strip {
-  display: block;
-  will-change: transform;
-}
-
-.veil__cell {
-  display: block;
-  height: 1em;
 }
 
 /* The header rides above the sheet during navigation (not during the first-visit loader). */
@@ -165,7 +190,7 @@ html {
 
 /* Font stacks live on body because next/font sets its variables on body's class. */
 body {
-  --font-display: var(--font-anton), Impact, "Arial Narrow", sans-serif;
+  --font-display: var(--font-heavy), "Arial Black", sans-serif;
   --font-scrawl: var(--font-marker), "Comic Sans MS", cursive;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   margin: 0;
@@ -173,7 +198,7 @@ body {
   overflow-x: hidden;
   background: var(--c-paper);
   color: var(--c-ink);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -308,13 +333,17 @@ textarea:focus-visible {
   width: min(1180px, calc(100% - 4rem));
   margin: 0 auto;
   font-family: var(--font-display);
-  font-size: clamp(3rem, 8.6vw, 8.6vw);
-  line-height: 0.95;
+  font-size: clamp(1.9rem, 5.9vw, 5.2rem); /* capped so wide screens keep it inside the centred column */
+  font-weight: 900;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
   text-transform: uppercase;
 }
 
 .contact-hero__row {
   display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.3em;
   justify-content: space-between;
   align-items: baseline;
 }
@@ -442,6 +471,7 @@ textarea:focus-visible {
 @media (max-width: 760px) {
   .contact-hero {
     width: calc(100% - 2rem);
+    font-size: 9vw;
   }
 
   .contact-hero-wrapper {
@@ -456,6 +486,10 @@ textarea:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  body::after {
+    animation: none;
   }
 
   .scroll-cue__dot {

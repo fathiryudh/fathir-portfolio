@@ -116,7 +116,7 @@
 
 .letter__name {
   margin: 0 0 4px;
-  font-family: var(--font-geist-sans), Arial, sans-serif;
+  font-family: var(--font-body), Arial, sans-serif;
   font-size: 17px;
   font-weight: 600;
   letter-spacing: -0.02em;
