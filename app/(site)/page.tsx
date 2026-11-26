@@ -4,7 +4,7 @@ import { MaskText, Reveal } from "@/components/site/reveal";
 import WorkRows from "@/components/site/work-rows";
 import IconTrail from "@/components/site/icon-trail";
 import type { Metadata } from "next";
-import { FULL_NAME, projects, socials } from "@/lib/site-content";
+import { FULL_NAME, projects, services, socials } from "@/lib/site-content";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
@@ -54,6 +54,41 @@ export default function Home() {
           </div>
         </section>
       </IconTrail>
+
+      <section className="section services" aria-labelledby="services-title">
+        <div className="section__head">
+          <h2 id="services-title" className="label">
+            What I build <span className="muted">({String(services.length).padStart(2, "0")})</span>
+          </h2>
+          <TransitionLink href="/contact" className="u-link label">
+            Start a project
+          </TransitionLink>
+        </div>
+        <ol className="services__list">
+          {services.map((service, index) => (
+            <Reveal as="li" key={service.title} className="service" delay={index}>
+              <span className="service__no">{String(index + 1).padStart(2, "0")}</span>
+              <h3 className="service__title">{service.title}</h3>
+              <p className="service__line">{service.line}</p>
+              <p className="service__proof label">
+                <span className="muted">Built:</span>{" "}
+                {service.proof.map((slug, i) => {
+                  const project = projects.find((item) => item.slug === slug);
+                  if (!project) return null;
+                  return (
+                    <span key={slug}>
+                      {i > 0 ? ", " : null}
+                      <TransitionLink href={`/work/${slug}`} className="u-link">
+                        {project.title}
+                      </TransitionLink>
+                    </span>
+                  );
+                })}
+              </p>
+            </Reveal>
+          ))}
+        </ol>
+      </section>
 
       <section className="section work-panel" aria-labelledby="selected-work">
         <div className="work-panel__heat" aria-hidden="true">

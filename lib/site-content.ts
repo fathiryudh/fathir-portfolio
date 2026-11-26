@@ -142,6 +142,27 @@ export const projects: Project[] = [
   },
 ];
 
+// What I can build for a business, each backed by real projects (slugs from `projects`).
+export type Service = { title: string; line: string; proof: string[] };
+
+export const services: Service[] = [
+  {
+    title: "Websites that bring in customers",
+    line: "A fast, good-looking site for your business, with enquiries, bookings or a shop built in, and someone to fix it when you need changes.",
+    proof: ["therapist-website", "sghustle", "draaqutz"],
+  },
+  {
+    title: "Ordering and booking in the chat",
+    line: "Customers order or book through WhatsApp, Telegram or one link. Payment gets checked, confirmations and reminders go out, and you get one clean list.",
+    proof: ["draaqutz", "tappd"],
+  },
+  {
+    title: "Automating the boring admin",
+    line: "The copy-paste work that eats your evenings: forms into spreadsheets, documents read and filed, reports that write themselves.",
+    proof: ["hr-resume-rpa", "tappd"],
+  },
+];
+
 export type TimelineItem = { period: string; title: string; detail: string };
 
 export const experience: TimelineItem[] = [
