@@ -119,7 +119,7 @@ export const demos: Record<string, ComponentType> = {
       <Letter />
     </div>
   ),
-  "paper-veil": () => (
+  "fire-wall": () => (
     <div className="lib-demo lib-demo--center">
       <p className="lib-demo__big">Every page change.</p>
       <TransitionLink href="/work" className="lib-demo__btn lib-demo__btn--big label">

@@ -4,14 +4,13 @@ import { createContext, useCallback, useContext, useEffect, useRef, type Compone
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
-import { VeilPaper } from "@/components/site/veil-paper";
+import { startFlame } from "@/components/site/ascii-flame";
 
-// Page transition + first-visit loader, after Carter Ogunsola's veil (Design References/
-// carterogunsola.com/Page Transition — Torn Paper Veil). A paper sheet sweeps up over the page with a
-// torn, fibrous leading edge while the old page recedes; the route swaps only once the screen is
-// covered; the same sheet keeps travelling up and off, its torn trailing edge uncovering the new page.
-// The header rides above the sheet during navigation. On the first visit of a session the sheet starts
-// down and a counter climbs to 100 before the first reveal.
+// Page transition + first-visit loader: a wall of ASCII fire (Getsuga colours, components/site/
+// ascii-flame.ts). The wall rises from the bottom with flames licking its top edge while the old page
+// recedes; the route swaps only once the screen is covered; then the wall drops back down with the
+// flames riding its edge, uncovering the new page. The header rides above it during navigation. On the
+// first visit of a session the fire is the loading bar, erupts at 100%, then the wall burns down.
 //
 // <html data-veil> (set before paint by the inline script in app/layout.tsx, then by this module):
 //   boot | fast          page load, sheet covering, waiting to reveal
@@ -19,13 +18,16 @@ import { VeilPaper } from "@/components/site/veil-paper";
 //   revealing           sheet leaving
 //   (absent)            idle
 
-const COVER = 1.3;
-const REVEAL = 1.1;
-const BOOT_REVEAL = 1.3;
+// Slow on purpose: the fire is the show.
+const COVER = 1.6;
+const REVEAL = 1.7;
+const BOOT_REVEAL = 1.9;
+const WALL_FIRE = { progress: 1, level: 1.5 }; // the wall's edge: lit full width, a little past a full plume
 const ARRIVAL_TIMEOUT = 8000;
 const PENDING = new Set(["boot", "fast", "covering", "covered"]);
-const COUNTER = [0, 6, 13, 21, 34, 47, 58, 69, 81, 92, 100];
-const COUNTER_RESTS = [2, 4, 6, 8];
+// Loading progress (%) with rests, so the fire burns across in bursts rather than at a constant crawl.
+const PROGRESS = [0, 6, 13, 21, 34, 47, 58, 69, 81, 92, 100];
+const PROGRESS_RESTS = [2, 4, 6, 8];
 
 type Veil = { go: (href: string) => boolean };
 
@@ -65,35 +67,37 @@ export function VeilProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const veilRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
-  const stripRef = useRef<HTMLSpanElement>(null);
-  const travelRef = useRef<HTMLDivElement>(null);
-  const paper = useRef<VeilPaper | null>(null);
-  const edges = useRef({ top: 0, bottom: 0 });
+  const flameRef = useRef<HTMLCanvasElement>(null);
+  const flame = useRef({ progress: 0, level: 1, stop: () => {} });
+  const wallRef = useRef<HTMLDivElement>(null);
+  const wallFlameRef = useRef<HTMLCanvasElement>(null);
+  const wallStop = useRef(() => {});
   const target = useRef<string | null>(null);
   const watchdog = useRef(0);
   const busy = useRef(false);
 
-  // One source of truth for the sheet's shape: the clip-path straight edges and the shader's tears.
-  const draw = useCallback(() => {
-    const veil = veilRef.current;
-    if (!veil) return;
-    const { top, bottom } = edges.current;
-    veil.style.clipPath = `inset(${(top * 100).toFixed(3)}% 0% ${(bottom * 100).toFixed(3)}% 0%)`;
-    paper.current?.render(top, bottom);
+  // Far enough down that the panel and the flames above it are both off screen.
+  const parked = () => window.innerHeight * 1.7;
+
+  const lightWall = useCallback(() => {
+    wallStop.current();
+    if (wallFlameRef.current) wallStop.current = startFlame(wallFlameRef.current, () => WALL_FIRE);
   }, []);
 
   const hide = useCallback(() => {
     const veil = veilRef.current;
     if (veil) veil.style.visibility = "hidden";
+    gsap.set(wallRef.current, { y: parked() });
+    flame.current.stop();
+    wallStop.current();
     scrimRef.current?.style.setProperty("opacity", "0");
     setState(null);
     busy.current = false;
   }, []);
 
   const reveal = useCallback(
-    (duration: number, exitCounter = false) => {
+    (duration: number) => {
       const veil = veilRef.current;
       if (!veil) return;
       clearTimeout(watchdog.current);
@@ -102,29 +106,24 @@ export function VeilProvider({ children }: { children: React.ReactNode }) {
       veil.classList.add("is-js");
       document.querySelector("main")?.removeAttribute("inert");
       document.dispatchEvent(new CustomEvent("veil:reveal", { detail: { duration } }));
-      edges.current = { top: 0, bottom: 0 };
       const tl = gsap.timeline({ onComplete: hide });
       tl.to(scrimRef.current, { opacity: 0, duration: 0.3 }, 0);
-      tl.to(edges.current, { bottom: 1, duration, ease: "expo.inOut", onUpdate: draw }, 0);
-      if (exitCounter && travelRef.current) {
-        tl.to(travelRef.current, { y: -window.innerHeight, duration: 0.8, ease: "expo.inOut" }, 0);
-      }
+      lightWall();
+      tl.fromTo(wallRef.current, { y: 0 }, { y: parked(), duration, ease: "power3.inOut" }, 0);
     },
-    [draw, hide],
+    [hide, lightWall],
   );
 
-  // First visit: climb the counter while fonts and the page finish loading, then reveal.
+  // First visit: the fire is the loading bar. It burns across the bottom from left to right while fonts
+  // and the page finish loading, and at 100% it erupts up the whole screen before the stripes wipe it.
   const boot = useCallback(async () => {
-    const strip = stripRef.current;
-    const travel = travelRef.current;
     const climb = { index: 0 };
-    const rise = Math.max(0, window.innerHeight - 220);
     const set = () => {
-      if (strip) strip.style.transform = `translateY(${-climb.index}em)`;
       const low = Math.floor(climb.index);
-      const value = COUNTER[low] + (COUNTER[Math.min(low + 1, COUNTER.length - 1)] - COUNTER[low]) * (climb.index - low);
-      if (travel) travel.style.transform = `translateY(${(-rise * value) / 100}px)`;
+      const value = PROGRESS[low] + (PROGRESS[Math.min(low + 1, PROGRESS.length - 1)] - PROGRESS[low]) * (climb.index - low);
+      flame.current.progress = value / 100;
     };
+    if (flameRef.current) flame.current.stop = startFlame(flameRef.current, () => flame.current);
     const ready = Promise.all([
       capped(document.fonts.ready, 2500),
       capped(
@@ -136,46 +135,31 @@ export function VeilProvider({ children }: { children: React.ReactNode }) {
     ]);
     const hops = gsap.timeline({ onUpdate: set });
     let from = 0;
-    for (const rest of COUNTER_RESTS) {
-      hops.to(climb, { index: rest, duration: 0.18 + (COUNTER[rest] - COUNTER[from]) * 0.012, ease: "power3.inOut" });
-      hops.to({}, { duration: 0.12 });
+    for (const rest of PROGRESS_RESTS) {
+      hops.to(climb, { index: rest, duration: 0.3 + (PROGRESS[rest] - PROGRESS[from]) * 0.024, ease: "power3.inOut" });
+      hops.to({}, { duration: 0.28 });
       from = rest;
     }
     await Promise.all([ready, new Promise((resolve) => hops.eventCallback("onComplete", resolve))]);
     await new Promise((resolve) =>
-      gsap.to(climb, { index: COUNTER.length - 1, duration: 0.6, ease: "power2.out", onUpdate: set, onComplete: resolve }),
+      gsap.to(climb, { index: PROGRESS.length - 1, duration: 1, ease: "power2.out", onUpdate: set, onComplete: resolve }),
     );
-    await new Promise((resolve) => setTimeout(resolve, 180));
-    reveal(BOOT_REVEAL, true);
+    // 100%: the release. The fire surges to the top of the screen, holds, then the stripes wipe it away.
+    await new Promise((resolve) => gsap.to(flame.current, { level: 2, duration: 1.3, ease: "power2.in", onComplete: resolve }));
+    await new Promise((resolve) => setTimeout(resolve, 650));
+    reveal(BOOT_REVEAL);
   }, [reveal]);
 
   useEffect(() => {
     const veil = veilRef.current;
-    const canvas = canvasRef.current;
-    if (!veil || !canvas) return;
-
-    paper.current = VeilPaper.create(canvas);
-    if (paper.current) {
-      paper.current.resize();
-      veil.classList.add("is-gl");
-    }
-    const onResize = () => {
-      paper.current?.resize();
-      if (veil.style.visibility !== "hidden") draw();
-    };
-    window.addEventListener("resize", onResize);
-    const themeObserver = new MutationObserver(() => {
-      paper.current?.readTheme();
-      if (veil.style.visibility !== "hidden") draw();
-    });
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    if (!veil) return;
 
     const initial = document.documentElement.dataset.veil;
     if (initial === "boot" || initial === "fast") {
       busy.current = true;
+      veil.classList.add("is-js"); // JS owns it now: cancels the CSS failsafe, which would fade a slow loader at 4s
       veil.style.visibility = "visible";
-      edges.current = { top: 0, bottom: 0 };
-      draw();
+      gsap.set(wallRef.current, { y: 0 });
       if (initial === "boot") {
         boot();
       } else {
@@ -184,12 +168,7 @@ export function VeilProvider({ children }: { children: React.ReactNode }) {
     } else {
       hide();
     }
-
-    return () => {
-      window.removeEventListener("resize", onResize);
-      themeObserver.disconnect();
-    };
-  }, [boot, draw, hide, reveal]);
+  }, [boot, hide, reveal]);
 
   // The route has swapped once the pathname matches; give the new page two frames to paint.
   useEffect(() => {
@@ -212,8 +191,7 @@ export function VeilProvider({ children }: { children: React.ReactNode }) {
       setState("covering");
       veil.classList.add("is-js");
       veil.style.visibility = "visible";
-      edges.current = { top: 1, bottom: 0 };
-      draw();
+      lightWall();
 
       const tl = gsap.timeline({
         onComplete: () => {
@@ -224,7 +202,7 @@ export function VeilProvider({ children }: { children: React.ReactNode }) {
           watchdog.current = window.setTimeout(() => window.location.assign(url.href), ARRIVAL_TIMEOUT);
         },
       });
-      tl.to(edges.current, { top: 0, duration: COVER, ease: "expo.inOut", onUpdate: draw }, 0);
+      tl.fromTo(wallRef.current, { y: parked() }, { y: 0, duration: COVER, ease: "power3.inOut" }, 0);
       tl.to(scrimRef.current, { opacity: 0.55, duration: COVER * 0.7, ease: "power2.out" }, 0);
       const page = document.querySelector<HTMLElement>("[data-page]");
       if (page) {
@@ -234,7 +212,7 @@ export function VeilProvider({ children }: { children: React.ReactNode }) {
       }
       return true;
     },
-    [draw, router],
+    [lightWall, router],
   );
 
   return (
@@ -242,22 +220,14 @@ export function VeilProvider({ children }: { children: React.ReactNode }) {
       {children}
       <div ref={scrimRef} className="veil-scrim" aria-hidden="true" />
       <div ref={veilRef} className="veil" aria-hidden="true">
-        <canvas ref={canvasRef} className="veil__paper" />
+        <div ref={wallRef} className="veil__wall">
+          <canvas ref={wallFlameRef} className="veil__wall-fire" />
+        </div>
         <div className="veil__boot">
+          <canvas ref={flameRef} className="veil__flame" />
           <div className="veil__word">
             <span>Fathir Yudhistira</span>
             <span>Portfolio · Singapore</span>
-          </div>
-          <div ref={travelRef} className="veil__travel">
-            <span className="veil__count">
-              <span ref={stripRef} className="veil__strip">
-                {COUNTER.map((value) => (
-                  <span key={value} className="veil__cell">
-                    {value}
-                  </span>
-                ))}
-              </span>
-            </span>
           </div>
         </div>
       </div>
