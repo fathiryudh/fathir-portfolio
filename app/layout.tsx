@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Archivo, Geist_Mono, Permanent_Marker, Unbounded } from "next/font/google";
 import SmoothScroll from "@/components/animations/smooth-scroll";
 import { VeilProvider } from "@/components/site/veil";
@@ -90,6 +91,7 @@ export default function RootLayout({
         <VeilProvider>
           <SmoothScroll>{children}</SmoothScroll>
         </VeilProvider>
+        <Analytics />
       </body>
     </html>
   );
