@@ -110,13 +110,13 @@ export const library: LibraryEntry[] = [
     files: ["components/contact/letter.tsx", "components/contact/letter.css"],
   },
   {
-    slug: "paper-veil",
-    name: "Torn Paper Veil",
+    slug: "fire-wall",
+    name: "Fire Wall",
     summary:
-      "The page transition: a paper sheet sweeps up with a torn, fibrous WebGL edge while the old page recedes, swaps the route once covered, then tears away to uncover the new one.",
-    reference: "Carter Ogunsola · Page Transition",
-    tags: ["React", "WebGL2"],
-    files: ["components/site/veil.tsx", "components/site/veil-paper.ts"],
+      "The page transition. A wall of ASCII fire in black and crimson rises up the screen while the old page shrinks back, the route swaps under cover, then the wall drops away with the flames riding its edge.",
+    reference: "Getsuga Tensho",
+    tags: ["React", "GSAP", "Canvas"],
+    files: ["components/site/veil.tsx", "components/site/ascii-flame.ts", "app/globals.css"],
   },
   {
     slug: "receipt-printer",

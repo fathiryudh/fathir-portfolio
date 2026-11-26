@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from "react";
 import gsap from "gsap";
+import { enableLite, isLite } from "@/components/site/lite";
+
+// Below this for SLOW_SECONDS in a row (tab visible, past the first seconds of load), go lite.
+const SMOOTH_FPS = 40;
+const SLOW_SECONDS = 3;
 
 // Live readouts for the header HUD and footer: Singapore time with colons that blink out of phase
 // (Balky Studio's studio clock) and a frames-per-second counter (Carter Ogunsola's HUD).
@@ -44,13 +49,21 @@ export function Fps({ className }: { className?: string }) {
   useEffect(() => {
     let frames = 0;
     let since = performance.now();
+    let slow = 0;
+    const started = since;
     const tick = () => {
       frames++;
       const now = performance.now();
       if (now - since >= 1000) {
-        setFps(Math.round((frames * 1000) / (now - since)));
+        const value = Math.round((frames * 1000) / (now - since));
+        setFps(value);
         frames = 0;
         since = now;
+        // Watchdog: a device that can't keep up drops the decorative extras for the rest of the visit.
+        if (document.visibilityState === "visible" && now - started > 4000 && !isLite()) {
+          slow = value < SMOOTH_FPS ? slow + 1 : 0;
+          if (slow >= SLOW_SECONDS) enableLite();
+        }
       }
     };
     gsap.ticker.add(tick);

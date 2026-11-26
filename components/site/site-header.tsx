@@ -28,6 +28,7 @@ function pageName(pathname: string) {
   if (pathname.startsWith("/work")) return "Work";
   if (pathname.startsWith("/about")) return "About";
   if (pathname.startsWith("/library")) return "Library";
+  if (pathname.startsWith("/contact")) return "Contact";
   return "Fathir";
 }
 
@@ -233,7 +234,8 @@ export default function SiteHeader() {
 
       <div className="site-header__bar">
         <div className="site-header__lead">
-          <TransitionLink href="/" className="site-header__logo" aria-label="Fathir Yudhistira, home" onClick={() => setOpen(false)}>
+          <TransitionLink href="/" className="site-header__logo" onClick={() => setOpen(false)}>
+            <span className="sr-only">Fathir Yudhistira, home</span>
             <SignatureMark />
             <PageCapsule pathname={pathname} />
           </TransitionLink>
@@ -274,10 +276,10 @@ export default function SiteHeader() {
           <button
             type="button"
             className="cmdk"
-            aria-label="Open command menu"
             aria-keyshortcuts="Meta+K Control+K"
             onClick={() => setCommandOpen(true)}
           >
+            <span className="sr-only">Open command menu</span>
             <RollText text="⌘K" />
           </button>
         </div>

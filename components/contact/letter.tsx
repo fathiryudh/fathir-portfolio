@@ -530,7 +530,7 @@ export default function Letter() {
           data-signed={signed || undefined}
           tabIndex={posted ? -1 : 0}
           role="button"
-          aria-label="Sign your name"
+          aria-label="Sign here"
           aria-haspopup="dialog"
           onClick={openPad}
           onKeyDown={(e) => {

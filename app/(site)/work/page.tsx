@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { MaskText, Reveal } from "@/components/site/reveal";
 import WorkRows from "@/components/site/work-rows";
-import { projects } from "@/lib/site-content";
+import { pageMetadata, projects } from "@/lib/site-content";
 
-export const metadata: Metadata = {
-  title: "Work | Muhammad Fathir Yudhistira",
-  description: "Websites, bots, products, mini projects and automation by Fathir Yudhistira.",
-};
+export const metadata: Metadata = pageMetadata("/work", "Work | Muhammad Fathir Yudhistira", "Websites, bots, products, mini projects and automation by Fathir Yudhistira.");
 
 export default function WorkPage() {
   return (
@@ -19,10 +16,13 @@ export default function WorkPage() {
         <MaskText
           className="page-head__lede lead"
           delay={3}
-          text="Websites, bots, products, mini projects, and automation in progress."
+          text="Websites, bots, apps, small experiments, and some automation that’s still half done."
         />
       </section>
-      <section className="section" aria-label="Projects">
+      <section className="section work-panel" aria-label="Projects">
+        <div className="work-panel__heat" aria-hidden="true">
+          <span />
+        </div>
         <WorkRows projects={projects} filterable />
       </section>
     </div>

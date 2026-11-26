@@ -116,7 +116,7 @@
 
 .letter__name {
   margin: 0 0 4px;
-  font-family: var(--font-geist-sans), Arial, sans-serif;
+  font-family: var(--font-body), Arial, sans-serif;
   font-size: 17px;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -227,6 +227,8 @@
 
 .letter__field:focus-within .letter__rule,
 .letter__sig:focus-visible .letter__rule {
+  /* Thicker as well as darker, so keyboard focus reads at a glance. */
+  block-size: 2px;
   background: var(--pen);
 }
 

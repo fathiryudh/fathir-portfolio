@@ -2,12 +2,9 @@ import type { Metadata } from "next";
 import { MaskText, Reveal } from "@/components/site/reveal";
 import PhysicsTags from "@/components/site/physics-tags";
 import { TransitionLink } from "@/components/site/veil";
-import { education, experience, sideNotes, skillGroups, skills, type TimelineItem } from "@/lib/site-content";
+import { education, pageMetadata, experience, sideNotes, skillGroups, skills, type TimelineItem } from "@/lib/site-content";
 
-export const metadata: Metadata = {
-  title: "About | Muhammad Fathir Yudhistira",
-  description: "Software engineering student at SIT in Singapore, building web and mobile software.",
-};
+export const metadata: Metadata = pageMetadata("/about", "About | Muhammad Fathir Yudhistira", "Software engineering student at SIT in Singapore, building web and mobile software.");
 
 function Timeline({ title, items }: { title: string; items: TimelineItem[] }) {
   return (
@@ -42,7 +39,7 @@ export default function AboutPage() {
       <section className="about-bio grid">
         <MaskText
           className="about-bio__text h3"
-          text="I’m studying Software Engineering at SIT in Singapore, and I keep coming back to making software: websites, mobile apps, useful tools, and automations. On normal days, I just larp it till I make it, but I’d like to start a startup of my own."
+          text="I study Software Engineering at SIT in Singapore, and most of my free time goes into building stuff anyway: websites, mobile apps, small tools, automations. Right now I’m larping it till I make it. Someday I want my own startup."
         />
         <Reveal className="about-bio__notes" delay={2}>
           <p className="label muted">From</p>
@@ -50,7 +47,7 @@ export default function AboutPage() {
           <p className="label muted">Off the clock</p>
           <p>{sideNotes.join(" · ")}</p>
           <p className="label muted">Open to</p>
-          <p>Building custom websites, mobile apps, SaaS, software, and automation.</p>
+          <p>Custom websites, mobile apps, SaaS and automation.</p>
           <TransitionLink href="/contact" className="u-link">
             Have an idea? Let’s talk →
           </TransitionLink>

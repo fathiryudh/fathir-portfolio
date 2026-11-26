@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, Geist, Geist_Mono, Permanent_Marker } from "next/font/google";
+import { Archivo, Geist_Mono, Permanent_Marker, Unbounded } from "next/font/google";
 import SmoothScroll from "@/components/animations/smooth-scroll";
 import { VeilProvider } from "@/components/site/veil";
 
@@ -7,7 +7,13 @@ const BOOT_SCRIPT = `(() => {
   const root = document.documentElement;
   root.classList.add("js");
   try {
-    root.dataset.theme = localStorage.getItem("theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    root.dataset.theme = localStorage.getItem("theme") || "dark";
+  } catch {}
+  try {
+    // Lite mode (components/site/lite.ts): weak hardware, reduced motion, or an earlier slow page this visit.
+    const n = navigator;
+    if ((n.hardwareConcurrency || 8) <= 4 || (n.deviceMemory || 8) <= 4 || sessionStorage.getItem("lite")
+        || matchMedia("(prefers-reduced-motion: reduce)").matches) root.dataset.lite = "";
   } catch {}
   try {
     if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -18,9 +24,10 @@ const BOOT_SCRIPT = `(() => {
 })();`;
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const archivo = Archivo({
+  variable: "--font-body",
   subsets: ["latin"],
+  axes: ["wdth"],
 });
 
 const geistMono = Geist_Mono({
@@ -28,10 +35,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const anton = Anton({
-  variable: "--font-anton",
+const unbounded = Unbounded({
+  variable: "--font-heavy",
   subsets: ["latin"],
-  weight: "400",
 });
 
 const marker = Permanent_Marker({
@@ -42,14 +48,14 @@ const marker = Permanent_Marker({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fathiryudh.com"),
-  title: "Muhammad Fathir Yudhistira | Software Builder",
+  title: "Muhammad Fathir Yudhistira | Software engineering student",
   description:
-    "Fathir Yudhistira builds useful software for the web and mobile. Software engineering student at SIT in Singapore.",
+    "Fathir Yudhistira makes useful software for the web and mobile. Software engineering student at SIT, based in Singapore.",
   keywords: ["Muhammad Fathir Yudhistira", "software engineer", "portfolio", "Singapore", "Next.js", "React", "Telegram bots", "web developer"],
   authors: [{ name: "Muhammad Fathir Yudhistira" }],
   openGraph: {
-    title: "Muhammad Fathir Yudhistira | Software Builder",
-    description: "Useful software for the web and mobile, by Fathir Yudhistira.",
+    title: "Muhammad Fathir Yudhistira | Software engineering student",
+    description: "Useful software for the web and mobile, made by Fathir Yudhistira in Singapore.",
     url: "https://fathiryudh.com",
     siteName: "Fathir Yudhistira Portfolio",
     locale: "en_SG",
@@ -58,8 +64,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     creator: "@fathiryudh",
-    title: "Muhammad Fathir Yudhistira | Software Builder",
-    description: "Useful software for the web and mobile, by Fathir Yudhistira.",
+    title: "Muhammad Fathir Yudhistira | Software engineering student",
+    description: "Useful software for the web and mobile, made by Fathir Yudhistira in Singapore.",
   },
 };
 
@@ -80,7 +86,7 @@ export default function RootLayout({
             saved or OS colour theme, and arm the page-load veil (counter loader on a session's first visit). */}
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${anton.variable} ${marker.variable}`}>
+      <body className={`${archivo.variable} ${geistMono.variable} ${unbounded.variable} ${marker.variable}`}>
         <VeilProvider>
           <SmoothScroll>{children}</SmoothScroll>
         </VeilProvider>

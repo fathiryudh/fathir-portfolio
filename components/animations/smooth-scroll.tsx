@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
+import { isLite } from "@/components/site/lite";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || isLite()) return;
 
     let instance: { destroy: () => void } | undefined;
     let dead = false; // cleanup can run before the import resolves (Strict Mode remounts)
