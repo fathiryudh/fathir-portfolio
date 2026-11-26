@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { isLite } from "@/components/site/lite";
 
 // A living gradient behind the footer panel, adapted from Balky's footer atmosphere band
 // (Design References/balky.studio/Footer): their Unicorn Studio stack of gradient + flow field +
@@ -81,11 +82,22 @@ uniform sampler2D u_sim;
 uniform float u_packed;
 uniform float u_blur;
 
-const vec3 ORANGE = vec3(0.957, 0.490, 0.333);
-const vec3 PINK = vec3(0.898, 0.541, 0.698);
-const vec3 LAVENDER = vec3(0.620, 0.655, 0.973);
-const vec3 GOLD = vec3(1.0, 0.745, 0.290);
-const vec3 BLUE = vec3(0.294, 0.455, 1.0);
+// Thermal-camera ramp. It starts at cyan, not deep blue, so the black footer text stays readable.
+const vec3 CYAN = vec3(0.0, 0.72, 1.0);
+const vec3 GREEN = vec3(0.17, 1.0, 0.56);
+const vec3 YELLOW = vec3(0.96, 1.0, 0.18);
+const vec3 ORANGE = vec3(1.0, 0.60, 0.0);
+const vec3 RED = vec3(1.0, 0.18, 0.08);
+const vec3 MAGENTA = vec3(1.0, 0.18, 0.78);
+
+vec3 heat(float t) {
+  t = clamp(t, 0.0, 1.0) * 5.0;
+  if (t < 1.0) return mix(CYAN, GREEN, t);
+  if (t < 2.0) return mix(GREEN, YELLOW, t - 1.0);
+  if (t < 3.0) return mix(YELLOW, ORANGE, t - 2.0);
+  if (t < 4.0) return mix(ORANGE, RED, t - 3.0);
+  return mix(RED, MAGENTA, t - 4.0);
+}
 
 float hash(vec2 p) {
   p = fract(p * vec2(123.34, 456.21));
@@ -124,11 +136,7 @@ vec3 shade(vec2 uv, float t) {
                 fbm(p * 0.85 + 3.0 * q + vec2(8.3, 2.8) - t * 0.06));
   float n = fbm(p * 0.8 + 2.5 * r);
 
-  vec3 c = mix(ORANGE, PINK, smoothstep(0.25, 0.75, n));
-  c = mix(c, LAVENDER, smoothstep(0.35, 0.85, r.x));
-  c = mix(c, GOLD, smoothstep(0.55, 0.9, q.y) * 0.85);
-  c = mix(c, BLUE, smoothstep(0.62, 0.95, r.y) * 0.55);
-  return c;
+  return heat(smoothstep(0.2, 0.85, n * 0.7 + r.x * 0.45 - 0.1));
 }
 
 void main() {
@@ -343,6 +351,11 @@ export default function LiquidGradient({ className }: { className?: string }) {
     let time = Math.random() * 100;
 
     const frame = (now: number) => {
+      if (isLite()) {
+        raf = 0;
+        delete canvas.dataset.ready; // fade back to the CSS gradient
+        return;
+      }
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
       time += dt * FLOW_SPEED;
