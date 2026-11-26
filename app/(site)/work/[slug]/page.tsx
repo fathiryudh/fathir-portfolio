@@ -89,7 +89,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             style={{ objectPosition: project.image.position ?? "center" }}
           />
         ) : (
-          <span className="case-shot__placeholder">Screens coming soon</span>
+          <span className="case-shot__placeholder">{project.href ? "No screenshot here. Use the live site link above" : "Screens coming soon"}</span>
         )}
       </Reveal>
 

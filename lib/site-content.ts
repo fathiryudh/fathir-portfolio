@@ -27,7 +27,7 @@ export const projects: Project[] = [
     role: "Full-stack build",
     status: "Private tool",
     summary:
-      "Built for my SCDF division. The website provides a dashboard to view officer statuses, while Telegram is where officers key in their statuses using the bot.",
+      "Built for my SCDF division. Officers key in their status through a Telegram bot, and the website is the dashboard where you can see where everyone is.",
     stack: ["JavaScript", "React", "Vite", "Express", "Prisma", "Postgres", "Telegram Bot"],
     image: { src: "/Dashboard.png", width: 1440, height: 900, alt: "Tappd attendance dashboard", blur: true },
     repoHref: "https://github.com/fathiryudh/tappd",
@@ -41,7 +41,7 @@ export const projects: Project[] = [
     role: "Product and engineering",
     status: "Live",
     summary:
-      "The website showcases clients, pricing, about, and portfolio. Booking is handled entirely on Telegram through a booking bot I built.",
+      "A site for a barber: past clients, prices, portfolio and an about page. You don't book on the site though. Bookings go through a Telegram bot I built.",
     stack: ["TypeScript", "Next.js", "Supabase", "Tailwind CSS", "Telegram", "Vercel"],
     image: {
       src: "/draaqutz-site.jpeg",
@@ -62,7 +62,7 @@ export const projects: Project[] = [
     role: "App architecture and UX",
     status: "In development",
     summary:
-      "A Flutter app direction around guided progress, local reminders, and daily rhythm. The code is still being shaped while the product idea gets tested.",
+      "A Flutter app for sticking to a daily routine, with guided steps and local reminders. I'm still testing the idea, so the code keeps changing.",
     stack: ["Dart", "Flutter", "Hive", "Provider", "Local Notifications", "Geolocation"],
     repoHref: "https://github.com/fathiryudh/khutwa",
   },
@@ -75,25 +75,26 @@ export const projects: Project[] = [
     role: "Product and engineering",
     status: "MVP",
     summary:
-      "Explores alternate hub routes and split-ticket combinations, labels route feasibility, and reports flight options. Live searches use SerpAPI’s Google Flights and Explore data; without an API key, the app falls back to deterministic demo results.",
+      "Looks for other ways to fly by routing through different hubs and splitting tickets, then marks which routes are actually doable. Live searches pull Google Flights data through SerpAPI. Without an API key it runs on fixed demo results.",
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "SerpAPI", "Zod"],
   },
   {
-    slug: "dr-sarah-angullia",
-    title: "Dr Sarah Angullia",
+    slug: "therapist-website",
+    title: "Therapist Website",
     categories: ["Websites"],
     category: "Clinical psychology practice website",
     kind: "Professional site",
     role: "Website build",
     status: "Live",
     summary:
-      "A practice website for a clinical psychologist, presenting therapy for children, adolescents, and adults, areas of support, qualifications, and enquiry steps. The site describes the approach as evidence-based, collaborative, and neuroaffirmative.",
+      "Website for a clinical psychologist who works with children, teens and adults. It covers what she helps with, her qualifications and how to reach her. Her approach is evidence based, collaborative and neuroaffirmative.",
     stack: ["React", "Vite", "React Router", "Framer Motion"],
     image: {
-      src: "/dr-sarah-angullia.jpg",
-      width: 1920,
-      height: 1200,
-      alt: "Homepage of Dr Sarah Angullia’s clinical psychology practice website",
+      src: "/therapist-website.jpg", // cropped so the client's name in the nav isn't shown
+      width: 1420,
+      height: 890,
+      alt: "Therapist website section titled Support for different ages and stages, with cards for children and adults",
+      position: "top",
     },
     href: "https://drsarahangullia.com/",
   },
@@ -106,7 +107,7 @@ export const projects: Project[] = [
     role: "Website build",
     status: "Live",
     summary:
-      "A photography and filmmaking portfolio for a Singapore-based creator, with commercial, event, portrait, and film work alongside a merchandise shop.",
+      "Portfolio for a Singapore photographer and filmmaker. Commercial, event, portrait and film work up front, with a merch shop on the side.",
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "Motion", "Zustand"],
     image: {
       src: "/sghustle.jpg",
@@ -125,7 +126,7 @@ export const projects: Project[] = [
     role: "Workflow automation",
     status: "Built",
     summary:
-      "A UiPath workflow automates HR resume intake, using OpenAI API calls to read PDF resumes and extract personal details and standout points. It combines those with job application details in an Excel tracker, files resumes in Google Drive by role, year, and month, then sends the completed spreadsheet to HR.",
+      "A UiPath bot for HR's pile of resumes. It sends each PDF to the OpenAI API to pull out personal details and anything that stands out, adds that to an Excel tracker next to the application details, files the resume in Google Drive by role, year and month, then sends HR the finished sheet.",
     stack: ["UiPath", "Visual Basic", "OpenAI API", "PDF Processing", "Excel", "Google Drive"],
   },
   {
@@ -136,7 +137,7 @@ export const projects: Project[] = [
     kind: "Agentic workflows",
     role: "Exploration",
     status: "Work in progress",
-    summary: "Exploring how agents can handle useful, multi-step workflows reliably.",
+    summary: "Figuring out how to get agents through multi-step work without them falling over halfway.",
     stack: [],
   },
 ];
@@ -148,13 +149,13 @@ export const experience: TimelineItem[] = [
     period: "Completed",
     title: "SCDF National Service",
     detail:
-      "Served NS in SCDF. Kept side projects running throughout — Telegram bots, dashboards, booking flows, and small web apps.",
+      "Did my NS in SCDF and kept building on the side the whole time: Telegram bots, dashboards, booking flows, small web apps.",
   },
   {
     period: "Mar - Aug 2023",
     title: "Sembcorp Industries",
     detail:
-      "Built an internal dashboard for Jurong Island engineering teams, connecting front-end views with REST data and operational reporting needs.",
+      "Built an internal dashboard for the engineering teams on Jurong Island. It pulled data from REST APIs into the reports they used to run operations.",
   },
 ];
 
@@ -169,13 +170,13 @@ export const education: TimelineItem[] = [
     period: "2021 - 2024",
     title: "Nanyang Polytechnic",
     detail:
-      "Diploma in Infocomm and Media Engineering, covering web, mobile, databases, networking, software engineering, and security.",
+      "Diploma in Infocomm and Media Engineering. Web, mobile, databases, networking, software engineering and security.",
   },
   {
     period: "2025",
     title: "Blockchain Developer Bootcamp",
     detail:
-      "Studied Solidity, smart contracts, dApps, Ethereum, DeFi, gas optimisation, and Web3.js through Pelita Bangsa Academy.",
+      "Solidity, smart contracts, dApps, Ethereum, DeFi, gas optimisation and Web3.js, run by Pelita Bangsa Academy.",
   },
 ];
 
