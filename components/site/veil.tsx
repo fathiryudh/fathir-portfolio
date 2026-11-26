@@ -29,6 +29,8 @@ const PENDING = new Set(["boot", "fast", "covering", "covered"]);
 // Phones and lite devices run everything at double speed: a long loader that eats every touch feels
 // like a frozen page there. Desktop keeps the slow, showy pacing.
 const pace = () => (window.matchMedia("(pointer: coarse)").matches || isLite() ? 2 : 1);
+// The first-visit loader runs this much faster than the base timings below (transitions are unaffected).
+const BOOT_SPEED = 1.5;
 // Loading progress (%) with rests, so the fire burns across in bursts rather than at a constant crawl.
 const PROGRESS = [0, 6, 13, 21, 34, 47, 58, 69, 81, 92, 100];
 const PROGRESS_RESTS = [2, 4, 6, 8];
@@ -121,7 +123,7 @@ export function VeilProvider({ children }: { children: React.ReactNode }) {
   // First visit: the fire is the loading bar. It burns across the bottom from left to right while fonts
   // and the page finish loading, and at 100% it erupts up the whole screen before the stripes wipe it.
   const boot = useCallback(async () => {
-    const speed = pace();
+    const speed = pace() * BOOT_SPEED;
     const climb = { index: 0 };
     let skipped = false;
     const set = () => {
