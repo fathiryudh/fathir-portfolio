@@ -49,6 +49,11 @@
   color: var(--pen);
 }
 
+/* Inline padding grows the tap area of the letterhead email link without moving the text. */
+.letter a[href^="mailto:"] {
+  padding-block: 6px;
+}
+
 .letter input,
 .letter textarea {
   min-inline-size: 0;

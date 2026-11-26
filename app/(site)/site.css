@@ -205,8 +205,18 @@
 /* ---------- Underline links (Balky's [underline-link], pure CSS) ---------- */
 
 .site .u-link {
+  --hit: 0px;
   position: relative;
   display: inline-block;
+  /* On touch screens the box grows to a 24px+ tap target; the negative margin keeps the layout still. */
+  padding-block: var(--hit);
+  margin-block: calc(var(--hit) * -1);
+}
+
+@media (pointer: coarse) {
+  .site .u-link {
+    --hit: 6px;
+  }
 }
 
 .site .u-link::before,
@@ -214,7 +224,7 @@
   content: "";
   position: absolute;
   left: 0;
-  bottom: -0.05em;
+  bottom: calc(var(--hit, 0px) - 0.05em); /* stays under the text, not under the padding */
   width: 100%;
   height: max(1px, 0.0625em);
   background: currentColor;
@@ -1542,6 +1552,7 @@ html[data-theme="dark"] .hero__wordmark--white {
   line-height: 0.88;
   letter-spacing: -0.07em;
   text-transform: uppercase;
+  text-wrap: balance;
   transition: letter-spacing 0.6s var(--ease-expo);
 }
 
@@ -2151,7 +2162,18 @@ html[data-lite] .work-row:hover .work-row__title {
   }
 
   .site-header__bar {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .site-header__lead,
+  .site-header__logo {
+    min-width: 0;
+  }
+
+  /* Long project names ("SmartFlight Hunter") used to widen the capsule past the screen edge and push
+     the Menu button off it. Cap it to the space left beside the logo; it already clips its overflow. */
+  .capsule {
+    max-width: 100%;
   }
 
   .cmdk {
@@ -2233,7 +2255,12 @@ html[data-lite] .work-row:hover .work-row__title {
 
   .work-row__categories {
     grid-column: 2;
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
+  }
+
+  /* 21 tags piled to the very top of a 20rem box on a phone. */
+  .tags-box {
+    height: 27rem;
   }
 
   .work-rows__hide-sm {
