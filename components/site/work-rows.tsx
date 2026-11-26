@@ -60,7 +60,7 @@ export default function WorkRows({ projects, filterable = false }: { projects: P
   }, [active, enabled]);
 
   return (
-    <div className="work-rows" onPointerLeave={() => setActive(null)}>
+    <div className="work-rows">
       {filterable ? (
         <div className="work-filters" role="group" aria-label="Filter projects by category">
           {["All", ...projectCategories].map((item) => (
@@ -80,12 +80,13 @@ export default function WorkRows({ projects, filterable = false }: { projects: P
         </div>
       ) : null}
       <div className="work-rows__head label" aria-hidden="true">
-        <span>No.</span>
+        <span>Pos.</span>
         <span>Project</span>
         <span className="work-rows__hide-sm">Categories</span>
         <span className="work-rows__hide-sm">Status</span>
       </div>
-      <ul>
+      {/* Leave on the list, not the wrapper, so the preview clears before the pointer reaches the filters. */}
+      <ul onPointerLeave={() => setActive(null)}>
         {visibleProjects.map((project, index) => (
           <Reveal as="li" key={project.slug} delay={index}>
             <TransitionLink
@@ -95,7 +96,7 @@ export default function WorkRows({ projects, filterable = false }: { projects: P
               onFocus={() => setActive(index)}
               onBlur={() => setActive(null)}
             >
-              <span className="work-row__no">{String(index + 1).padStart(2, "0")}</span>
+              <span className="work-row__no">P{String(index + 1).padStart(2, "0")}</span>
               <span className="work-row__title">{project.title}</span>
               <span className="work-row__categories">{project.categories.join(" · ")}</span>
               <span className="work-row__status work-rows__hide-sm">{project.status}</span>
@@ -123,7 +124,9 @@ export default function WorkRows({ projects, filterable = false }: { projects: P
                   style={{ objectPosition: project.image.position ?? "center" }}
                 />
               ) : (
-                <span className="work-follower__placeholder">{project.title}</span>
+                <span className="work-follower__placeholder">
+                  <span>{project.title}</span>
+                </span>
               )}
             </div>
           ))}

@@ -16,10 +16,13 @@ export default function WorkPage() {
         <MaskText
           className="page-head__lede lead"
           delay={3}
-          text="Websites, bots, products, mini projects, and automation in progress."
+          text="Websites, bots, apps, small experiments, and some automation that’s still half done."
         />
       </section>
-      <section className="section" aria-label="Projects">
+      <section className="section work-panel" aria-label="Projects">
+        <div className="work-panel__heat" aria-hidden="true">
+          <span />
+        </div>
         <WorkRows projects={projects} filterable />
       </section>
     </div>
